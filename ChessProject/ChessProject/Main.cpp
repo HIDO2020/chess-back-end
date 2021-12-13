@@ -7,7 +7,7 @@
 void main()
 {
 	Board b;
-	Game g("RNBQKBNRPPPPPPPP################################pppppppprnbqkbnr");
+	Game g("#######R#######K###########################################rk###0");
 	//Board b("RNBQKBNRPPPPPPPP################################pppppppprnbqkbnr0");
 	b = g.get_board();
 	b.print_board();

@@ -14,6 +14,7 @@ public:
 	// Constructor
 	Board(std::string _board);
 	Board();
+	//methods
 	void print_board();
 	void move_piece(std::string pos, Tool& t);
 	Tool get_tool(std::string pos);

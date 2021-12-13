@@ -6,7 +6,8 @@ Board::Board(std::string _board)
 {
 	char letterColumn = ' ';
 	std::string pos = "ab";			//f3 for example
-	int i = 0, j = 0, count = 63;
+	int i = 0, j = 0;
+	int count = 63;			//the amount of chars in the string from 0 - 63
 	for (i = 0 ; i < ROWS; i++)
 	{
 		for (j = COLUMNS -1 ; j >= 0; j--)
@@ -32,6 +33,9 @@ Board::Board()
 	}
 }
 
+/*
+prints the current board
+*/
 void Board::print_board()
 {
 	int i = 0, j = 0;
@@ -46,11 +50,15 @@ void Board::print_board()
 	std::cout << std::endl;
 }
 
+/*
+function thats changing the view of the board and moving pieces int the 2d array
+also swapping them with '#'
+*/
 void Board::move_piece(std::string pos, Tool& t)
 {
 	int numColumn = 0, numRow = 0;
 	//adds # instead
-	numColumn = t.get_pos()[0] - 48;			
+	numColumn = t.get_pos()[0] - 48;		//asci from 1 --> 0(int)		
 	numRow = t.get_pos()[1] ;				
 	this->_board[numRow][numColumn].set_type('#');
 
