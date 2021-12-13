@@ -7,6 +7,10 @@ Tool::Tool(std::string pos, char type)
     {
         this->_color = false;
     }
+    else
+    {
+        this->_color = true;
+    }
     this->_pos = pos;
     this->_type = type;
 }
