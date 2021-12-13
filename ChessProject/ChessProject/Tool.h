@@ -7,6 +7,7 @@ class Tool
 {
 public:
     Tool(std::string pos, char type);
+    Tool();
     ~Tool();
     void set_pos(const std::string pos);
     int move(std::string _dst);
@@ -17,6 +18,7 @@ public:
     int invalid_tool_move(std::string _dst);
     int invalid_check_move(std::string _pos);
 private:
+    //feilds
     std::string _pos;
     bool _color;
     char _type;

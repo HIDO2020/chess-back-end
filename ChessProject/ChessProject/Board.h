@@ -8,15 +8,16 @@
 #define ROWS 8
 #define COLUMNS 8
 
-class Board : Game
+class Board 
 {
 public:
 
 	// Constructor
 	Board(std::string _board);
+	Board();
 	void print_board();
-	//void move_piece(std::string pos, Tool& t);
-	//Tool[][] get_board();
+	void move_piece(std::string pos, Tool& t);
+	//Board get_board();
 
 private:
 	//fields

@@ -2,6 +2,7 @@
 
 #include <iostream>
 #include <string>
+#include "Board.h"
 //#include <tool.h>
 
 class Game
@@ -9,7 +10,7 @@ class Game
 public:
 
 	// Constructor
-	Game(std::string _board);
+	Game(std::string _board_string);
 	
 	//getters
 	bool get_black_check();
@@ -26,4 +27,5 @@ private:
 	bool _is_check_white;
 	bool _is_check_black;
 	bool _turn;
+	//Board _board;
 };

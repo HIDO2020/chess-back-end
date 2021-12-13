@@ -1,5 +1,20 @@
 #include "Game.h"
 
+Game::Game(std::string _board_string)
+{
+    this->_is_check_black = false;
+    this->_is_check_white = false;
+    if (_board_string[65] == '0')
+    {
+        this->_turn = true;
+    }
+    else
+    {
+        this->_turn = false;
+    }
+    //this->_board = Board(_board_string);
+}
+
 bool Game::get_black_check()
 {
     return this->_is_check_black;

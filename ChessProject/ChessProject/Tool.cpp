@@ -15,6 +15,15 @@ Tool::Tool(std::string pos, char type)
     this->_type = type;
 }
 
+Tool::Tool()
+{
+    this->_color = false;
+    this->_pos = " ";
+    this->_type = ' ';
+}
+
+
+
 Tool::~Tool()
 {
 }
