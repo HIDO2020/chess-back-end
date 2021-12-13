@@ -14,7 +14,7 @@ public:
     std::string get_pos();
     //moves checks
     int invalid_index_move(std::string _dst);
-    virtual int invalid_tool_move(std::string _dst) = 0;
+    int invalid_tool_move(std::string _dst);
     int invalid_check_move(std::string _pos);
 private:
     std::string _pos;

@@ -3,7 +3,7 @@
 #include <iostream>
 #include <string>
 #include "Game.h"
-//#include <Tool.h>
+#include "Tool.h"
 
 #define ROWS 8
 #define COLUMNS 8
@@ -20,5 +20,5 @@ public:
 
 private:
 	//fields
-	 int _board[ROWS][COLUMNS];
+	 Tool _board[ROWS][COLUMNS];
 };
