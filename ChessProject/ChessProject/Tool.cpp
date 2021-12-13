@@ -33,6 +33,11 @@ void Tool::set_pos(std::string pos)
     this->_pos = pos;
 }
 
+void Tool::set_type(char type)
+{
+    this->_type = type;
+}
+
 int Tool::move(std::string _dst)
 {
     switch (0)

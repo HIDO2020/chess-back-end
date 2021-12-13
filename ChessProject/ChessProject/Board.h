@@ -2,7 +2,6 @@
 
 #include <iostream>
 #include <string>
-#include "Game.h"
 #include "Tool.h"
 
 #define ROWS 8

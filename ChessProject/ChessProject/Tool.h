@@ -10,6 +10,7 @@ public:
     Tool();
     ~Tool();
     void set_pos(const std::string pos);
+    void set_type(char type);
     int move(std::string _dst);
     char get_type();
     std::string get_pos();
