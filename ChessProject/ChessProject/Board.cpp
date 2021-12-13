@@ -6,13 +6,13 @@
 Board::Board(std::string _board) 
 {
 	char letterColumn = ' ';
-	std::string pos = "";			//f3 for example
+	std::string pos = "ab";			//f3 for example
 	int i = 0, j = 0, count = 63;
-	for (i = ROWS - 1; i >= 0; i--)
+	for (i = 0 ; i < ROWS; i++)
 	{
-		for (j = COLUMNS - 1; j >= 0; j--)
+		for (j = COLUMNS -1 ; j >= 0; j--)
 		{
-			letterColumn = j + 30;		//asci from 1 --> a
+			letterColumn = j + 48;		//asci from 1 --> a
 			pos[0] = letterColumn;		
 			pos[1] = i;
 			this->_board[i][j] = Tool(pos, _board[count]);
@@ -24,9 +24,9 @@ Board::Board(std::string _board)
 Board::Board() 
 {
 	int i = 0, j = 0;
-	for (i = ROWS - 1; i >= 0; i--)
+	for (i = 0; i < ROWS; i++)
 	{
-		for (j = COLUMNS - 1; j >= 0; j--)
+		for (j = 0; j < COLUMNS; j++)
 		{
 			this->_board[i][j] = Tool();
 		}
@@ -38,7 +38,7 @@ void Board::print_board()
 	int i = 0, j = 0;
 	for (i = ROWS - 1; i >= 0; i--)
 	{
-		for (j = COLUMNS - 1; j >= 0; j--)
+		for (j = 0; j < COLUMNS; j++)
 		{
 			std::cout << this->_board[i][j].get_type();
 		}
@@ -49,18 +49,25 @@ void Board::print_board()
 
 void Board::move_piece(std::string pos, Tool& t)
 {
-	int numColumn, numRow;
+	int numColumn = 0, numRow = 0;
 	//adds # instead
 	numColumn = t.get_pos()[0];
 	numRow = t.get_pos()[1];
 	this->_board[numRow][numColumn] = Tool();
 
-	numColumn = pos[0] - 30;
+	numColumn = pos[0] - 96;    //asci from a --> 1(int)
 	numRow = pos[1];
 	this->_board[numRow][numColumn] = t;
 }
 
-//Board Board::get_board()
-//{
-//	return this->_board;
-//}
+Tool Board::get_tool(std::string pos)
+{
+	int numColumn = 0, numRow = 0;
+
+	numColumn = pos[0] - 97;    //asci from a --> 1(int)
+	numRow = pos[1] - 49;		//asci from 1 --> 1(int)
+
+	return this->_board[numRow][numColumn];
+}
+
+
