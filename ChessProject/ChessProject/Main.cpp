@@ -6,8 +6,10 @@
 
 void main()
 {
-	//Game g("RNBQKBNRPPPPPPPP################################pppppppprnbqkbnr");
-	Board b("RNBQKBNRPPPPPPPP################################pppppppprnbqkbnr0");
+	Board b;
+	Game g("RNBQKBNRPPPPPPPP################################pppppppprnbqkbnr");
+	//Board b("RNBQKBNRPPPPPPPP################################pppppppprnbqkbnr0");
+	b = g.get_board();
 	b.print_board();
 	Tool t = b.get_tool("e4");
 	std::cout << t.get_type() << std::endl << std::endl;

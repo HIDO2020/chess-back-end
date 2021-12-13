@@ -12,7 +12,7 @@ Game::Game(std::string _board_string)
     {
         this->_turn = false;
     }
-    //this->_board = Board(_board_string);
+    this->_board = Board(_board_string);
 }
 
 bool Game::get_black_check()
@@ -28,6 +28,11 @@ bool Game::get_white_check()
 bool Game::get_turn()
 {
     return this->_turn;
+}
+
+Board Game::get_board()
+{
+    return this->_board;
 }
 
 void Game::set_black_check(const bool b)

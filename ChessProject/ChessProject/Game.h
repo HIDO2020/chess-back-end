@@ -16,6 +16,7 @@ public:
 	bool get_black_check();
 	bool get_white_check();
 	bool get_turn();
+	Board get_board();
 
 	//setters
 	void set_black_check(const bool b);
@@ -27,5 +28,5 @@ private:
 	bool _is_check_white;
 	bool _is_check_black;
 	bool _turn;
-	//Board _board;
+	Board _board;
 };
