@@ -19,7 +19,7 @@ public:
 	void move_piece(std::string pos, Tool& t);
 	//Board get_board();
 
-private:
+protected:
 	//fields
 	 Tool _board[ROWS][COLUMNS];
 };

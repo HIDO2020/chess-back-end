@@ -6,14 +6,14 @@
 Board::Board(std::string _board) 
 {
 	char letterColumn = ' ';
-	std::string pos = "";
+	std::string pos = "";			//f3 for example
 	int i = 0, j = 0, count = 63;
 	for (i = ROWS - 1; i >= 0; i--)
 	{
 		for (j = COLUMNS - 1; j >= 0; j--)
 		{
-			letterColumn = j + 30;
-			pos[0] = letterColumn;
+			letterColumn = j + 30;		//asci from 1 --> a
+			pos[0] = letterColumn;		
 			pos[1] = i;
 			this->_board[i][j] = Tool(pos, _board[count]);
 			count--;
@@ -49,8 +49,14 @@ void Board::print_board()
 
 void Board::move_piece(std::string pos, Tool& t)
 {
-	int numColumn = pos[0] - 30;
-	int numRow = pos[1];
+	int numColumn, numRow;
+	//adds # instead
+	numColumn = t.get_pos()[0];
+	numRow = t.get_pos()[1];
+	this->_board[numRow][numColumn] = Tool();
+
+	numColumn = pos[0] - 30;
+	numRow = pos[1];
 	this->_board[numRow][numColumn] = t;
 }
 

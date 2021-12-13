@@ -19,7 +19,7 @@ Tool::Tool()
 {
     this->_color = false;
     this->_pos = " ";
-    this->_type = ' ';
+    this->_type = '#';
 }
 
 

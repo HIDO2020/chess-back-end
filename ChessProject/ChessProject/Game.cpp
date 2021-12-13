@@ -4,7 +4,7 @@ Game::Game(std::string _board_string)
 {
     this->_is_check_black = false;
     this->_is_check_white = false;
-    if (_board_string[65] == '0')
+    if (_board_string[64] == '0')
     {
         this->_turn = true;
     }
