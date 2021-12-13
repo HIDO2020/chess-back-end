@@ -1,1 +1,23 @@
 #pragma once
+#include <iostream>
+#include <cstring>
+enum check_move { valid_move, valid_check, no_src, invalid_dst, self_check, invalid_index, invalid_move, same_src_dst, mate };
+
+class Tool
+{
+public:
+    Tool(std::string pos, char type);
+    ~Tool();
+    void set_pos(const std::string pos);
+    int move(std::string _dst);
+    char get_type();
+    std::string get_pos();
+    //moves checks
+    int invalid_index_move(std::string _dst);
+    virtual int invalid_tool_move(std::string _dst) = 0;
+    int invalid_check_move(std::string _pos);
+private:
+    std::string _pos;
+    bool _color;
+    char _type;
+};
