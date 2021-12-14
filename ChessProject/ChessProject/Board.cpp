@@ -12,9 +12,9 @@ Board::Board(std::string _board)
 	{
 		for (j = COLUMNS -1 ; j >= 0; j--)
 		{
-			letterColumn = j + 48;		//asci from 1 --> a
+			letterColumn = j + 97;		//asci from 1 --> a
 			pos[0] = letterColumn;		
-			pos[1] = i;
+			pos[1] = i + 49;
 			if (_board[count] == 'r' || _board[count] == 'R')
 			{
 				this->_board[i][j] = Rook(pos, _board[count]);
@@ -61,7 +61,7 @@ void Board::print_board()
 function thats changing the view of the board and moving pieces int the 2d array
 also swapping them with '#'
 */
-void Board::move_piece(std::string pos, Tool& t)
+void Board::move_piece(std::string pos, Tool t)
 {
 	int numColumn = 0, numRow = 0;
 	//adds # instead
@@ -71,6 +71,8 @@ void Board::move_piece(std::string pos, Tool& t)
 
 	numColumn = pos[0] - 97;    //asci from a --> 1(int)
 	numRow = pos[1] - 49;		//asci from 1 --> 1(int)
+	this->_board[numRow][numColumn].set_pos(pos);
+	this->_board[numRow][numColumn].set_type(t.get_type());
 	this->_board[numRow][numColumn] = t;
 }
 

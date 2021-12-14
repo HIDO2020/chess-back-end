@@ -17,7 +17,7 @@ public:
 	Board();
 	//methods
 	void print_board();
-	void move_piece(std::string pos, Tool& t);
+	void move_piece(std::string pos, Tool t);
 	Tool get_tool(std::string pos);
 
 protected:

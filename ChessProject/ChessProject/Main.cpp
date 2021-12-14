@@ -66,6 +66,7 @@ void error_switch(int e, Board b, Tool &t, std::string adr, Game g)
     switch (e)
     {
     case valid_move:
+        
         b.move_piece(adr, t);
         t.set_pos(adr);
         b.print_board();
