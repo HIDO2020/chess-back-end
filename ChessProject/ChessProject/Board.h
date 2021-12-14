@@ -3,6 +3,7 @@
 #include <iostream>
 #include <string>
 #include "Tool.h"
+#include "Rook.h"
 
 #define ROWS 8
 #define COLUMNS 8

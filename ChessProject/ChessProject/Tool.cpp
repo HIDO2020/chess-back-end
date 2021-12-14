@@ -38,18 +38,22 @@ void Tool::set_type(char type)
     this->_type = type;
 }
 
-int Tool::move(std::string _dst, Tool t)
-{ 
+int Tool::move_errors(std::string _dst, Tool t)
+{
     int numColumn = 0, numRow = 0;
 
-    numColumn = _dst[0] - 97;    //asci from a --> 1(int)
-    numRow = _dst[1] - 49;		//asci from 1 --> 1(int)
+    //error 5 (first cause he checks for existence of the tool index)
+    if (t.get_pos() == " " || this->get_pos() == " ")
+    {
+        return invalid_index;
+    }
     //error 1
     //to do: if the king is in the valid array of the tool
 
     //error 2 - can't move empty space
-    if (this->get_type() == '#')
-    {
+    if (this->get_type() == '#') //|| (isupper(this->get_type()) && isupper(dst.get_type())) ||
+    {  //(!isupper(this->get_type()) && !isupper(dst.get_type())))
+
         return no_src;
     }
 
@@ -59,9 +63,14 @@ int Tool::move(std::string _dst, Tool t)
         return invalid_dst;
     }
 
+    //error 7 - can't move tool to his current location)
+    if (this->get_pos() == t.get_pos())
+    {
+        return same_src_dst;
+    }
 
-    //this->_pos = _dst;
     return 0;
+    //this->_pos = _dst;
 }
 
 char Tool::get_type()

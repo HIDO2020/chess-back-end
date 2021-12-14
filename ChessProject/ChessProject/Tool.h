@@ -25,7 +25,7 @@ public:
     void set_pos(const std::string pos);
     void set_type(const char type);
 
-    int move(std::string _dst, Tool t);
+    int move_errors(std::string _dst, Tool t);
 
     char get_type();
     std::string get_pos();

@@ -6,7 +6,7 @@ Game::Game(std::string _board_string)
     this->_is_check_white = false;
     if (_board_string[64] == '0')       //check who start
     {
-        this->_turn = true;
+        this->_turn = 0;
     }
     else
     {
@@ -25,7 +25,7 @@ bool Game::get_white_check()
     return this->_is_check_white;
 }
 
-bool Game::get_turn()
+int Game::get_turn()
 {
     return this->_turn;
 }
@@ -45,9 +45,9 @@ void Game::set_white_check(const bool w)
     this->_is_check_white = w;
 }
 
-void Game::set_turn(const bool t)
+void Game::add_turn(const int t)
 {
-    this->_turn = t;
+    this->_turn = this->_turn + 1;
 }
 
 

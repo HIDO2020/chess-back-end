@@ -15,7 +15,14 @@ Board::Board(std::string _board)
 			letterColumn = j + 48;		//asci from 1 --> a
 			pos[0] = letterColumn;		
 			pos[1] = i;
-			this->_board[i][j] = Tool(pos, _board[count]);
+			if (_board[count] == 'r' || _board[count] == 'R')
+			{
+				this->_board[i][j] = Rook(pos, _board[count]);
+			}
+			else
+			{
+				this->_board[i][j] = Tool(pos, _board[count]);
+			}
 			count--;
 		}
 	}
