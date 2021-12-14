@@ -7,12 +7,22 @@
 void main()
 {
 	Board b;
-	Game g("#######R#######K###########################################rk###0");
 	//Board b("RNBQKBNRPPPPPPPP################################pppppppprnbqkbnr0");
+	Game g("#######R#######K###########################################rk###0");
 	b = g.get_board();
 	b.print_board();
 	Tool t = b.get_tool("e1");
-	std::cout << t.get_type() << std::endl << std::endl;
+	
+	t.move("e5", b.get_tool("e5"));
 	b.move_piece("e5", t);
+	t.set_pos("e5");
+
+	b.print_board();
+
+	//Tool t2 = b.get_tool("e5");
+	t.move("e8", b.get_tool("e8"));
+	b.move_piece("e8", t);
+	t.set_pos("e8");
+
 	b.print_board();
 }

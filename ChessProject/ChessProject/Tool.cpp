@@ -38,7 +38,7 @@ void Tool::set_type(char type)
     this->_type = type;
 }
 
-int Tool::move(std::string _dst, Tool t[8][8])
+int Tool::move(std::string _dst, Tool t)
 { 
     int numColumn = 0, numRow = 0;
 
@@ -54,12 +54,13 @@ int Tool::move(std::string _dst, Tool t[8][8])
     }
 
     //error 3 - can't move tool to the same square of other tool with same color
-    if (t[numRow][numColumn].get_color() == this->get_color())
+    if (t.get_color() == this->get_color() && t.get_type() != '#')
     {
         return invalid_dst;
     }
 
-    this->_pos = _dst;
+
+    //this->_pos = _dst;
     return 0;
 }
 

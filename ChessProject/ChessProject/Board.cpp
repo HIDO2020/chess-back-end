@@ -58,8 +58,8 @@ void Board::move_piece(std::string pos, Tool& t)
 {
 	int numColumn = 0, numRow = 0;
 	//adds # instead
-	numColumn = t.get_pos()[0] - 48;		//asci from 1 --> 0(int)		
-	numRow = t.get_pos()[1] ;				
+	numColumn = t.get_pos()[0] - 97;		//asci from 1 --> 0(int)		
+	numRow = t.get_pos()[1] - 49;				
 	this->_board[numRow][numColumn].set_type('#');
 
 	numColumn = pos[0] - 97;    //asci from a --> 1(int)
@@ -73,7 +73,7 @@ Tool Board::get_tool(std::string pos)
 
 	numColumn = pos[0] - 97;    //asci from a --> 1(int)
 	numRow = pos[1] - 49;		//asci from 1 --> 1(int)
-	
+	this->_board[numRow][numColumn].set_pos(pos);
 	return this->_board[numRow][numColumn];
 }
 
