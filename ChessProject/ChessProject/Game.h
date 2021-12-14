@@ -23,6 +23,9 @@ public:
 	void set_white_check(const bool w);
 	void add_turn(const int t);
 
+	std::string get_white_king_pos();
+	std::string get_black_king_pos();
+
 private:
 	//fields
 	bool _is_check_white;
