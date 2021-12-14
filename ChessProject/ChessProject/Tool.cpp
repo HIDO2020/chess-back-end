@@ -42,8 +42,8 @@ int Tool::move(std::string _dst, Tool t[8][8])
 { 
     int numColumn = 0, numRow = 0;
 
-    numColumn = this->get_pos()[0] - 97;    //asci from a --> 1(int)
-    numRow = this->get_pos()[1] - 49;		//asci from 1 --> 1(int)
+    numColumn = _dst[0] - 97;    //asci from a --> 1(int)
+    numRow = _dst[1] - 49;		//asci from 1 --> 1(int)
     //error 1
     //to do: if the king is in the valid array of the tool
 
@@ -54,9 +54,12 @@ int Tool::move(std::string _dst, Tool t[8][8])
     }
 
     //error 3 - can't move tool to the same square of other tool with same color
-    
+    if (t[numRow][numColumn].get_color() == this->get_color())
+    {
+        return invalid_dst;
+    }
 
-    //this->_pos = _dst;
+    this->_pos = _dst;
     return 0;
 }
 
@@ -68,6 +71,11 @@ char Tool::get_type()
 std::string Tool::get_pos()
 {
     return this->_pos;
+}
+
+bool Tool::get_color()
+{
+    return this->_color;
 }
 
 int Tool::invalid_index_move(std::string _dst)

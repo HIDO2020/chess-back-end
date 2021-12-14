@@ -26,8 +26,11 @@ public:
     void set_type(const char type);
 
     int move(std::string _dst, Tool t[8][8]);
+
     char get_type();
     std::string get_pos();
+    bool get_color();
+
     //moves checks
     int invalid_index_move(std::string _dst);
     int invalid_tool_move(std::string _dst);
