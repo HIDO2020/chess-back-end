@@ -38,33 +38,25 @@ void Tool::set_type(char type)
     this->_type = type;
 }
 
-int Tool::move(std::string _dst)
-{
-    switch (0)
-    {
-    case valid_move:
+int Tool::move(std::string _dst, Tool t[8][8])
+{ 
+    int numColumn = 0, numRow = 0;
 
-        break;
-    case valid_check:
-        break;
-    case no_src:
-        break;
-    case invalid_dst:
-        break;
-    case self_check:
-        break;
-    case invalid_index:
-        break;
-    case invalid_move:
-        break;
-    case same_src_dst:
-        break;
-    case mate:
-        break;
-    default:
-        break;
+    numColumn = this->get_pos()[0] - 97;    //asci from a --> 1(int)
+    numRow = this->get_pos()[1] - 49;		//asci from 1 --> 1(int)
+    //error 1
+    //to do: if the king is in the valid array of the tool
+
+    //error 2 - can't move empty space
+    if (this->get_type() == '#')
+    {
+        return no_src;
     }
-    this->_pos = _dst;
+
+    //error 3 - can't move tool to the same square of other tool with same color
+    
+
+    //this->_pos = _dst;
     return 0;
 }
 

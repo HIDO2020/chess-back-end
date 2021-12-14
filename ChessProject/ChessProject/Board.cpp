@@ -73,7 +73,7 @@ Tool Board::get_tool(std::string pos)
 
 	numColumn = pos[0] - 97;    //asci from a --> 1(int)
 	numRow = pos[1] - 49;		//asci from 1 --> 1(int)
-
+	
 	return this->_board[numRow][numColumn];
 }
 

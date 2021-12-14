@@ -1,17 +1,31 @@
 #pragma once
 #include <iostream>
 #include <cstring>
-enum check_move { valid_move, valid_check, no_src, invalid_dst, self_check, invalid_index, invalid_move, same_src_dst, mate };
 
-class Tool
+enum check_move { 
+    valid_move,
+    valid_check,
+    no_src,
+    invalid_dst,
+    self_check,
+    invalid_index,
+    invalid_move,
+    same_src_dst,
+    mate };
+
+class Tool 
 {
 public:
+
     Tool(std::string pos, char type);
     Tool();
     ~Tool();
+
+    //setters
     void set_pos(const std::string pos);
-    void set_type(char type);
-    int move(std::string _dst);
+    void set_type(const char type);
+
+    int move(std::string _dst, Tool t[8][8]);
     char get_type();
     std::string get_pos();
     //moves checks
