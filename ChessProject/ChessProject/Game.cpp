@@ -54,20 +54,29 @@ std::string Game::get_white_king_pos()
 {
     std::string cod = "a1";
     int i = 0, j = 0;
-    do 
+    do
     {
         for (i = 0; i < ROWS; i++)
         {
             cod[1] = '1';
-            cod[0] = cod[0] + 1;
             for (j = 0; j < COLUMNS; j++)
             {
+                if (this->_board.get_tool(cod).get_type() == 'k')
+                {
+                    break;
+                }
                 cod[1] = cod[1] + 1;
             }
+            
+            if (this->_board.get_tool(cod).get_type() == 'k')
+            {
+                break;
+            }
+            cod[0] = cod[0] + 1;
         }
 
-    } while (this->_board.get_tool("a1").get_type() != 'k');
-    
+    } while (this->_board.get_tool(cod).get_type() != 'k');
+
 
     return cod;
 }
@@ -81,14 +90,24 @@ std::string Game::get_black_king_pos()
         for (i = 0; i < ROWS; i++)
         {
             cod[1] = '1';
-            cod[0] = cod[0] + 1;
             for (j = 0; j < COLUMNS; j++)
             {
+                
+                if (this->_board.get_tool(cod).get_type() == 'K')
+                {
+                    break;
+                }
                 cod[1] = cod[1] + 1;
+           }
+            
+            if (this->_board.get_tool(cod).get_type() == 'K')
+            {
+                break;
             }
+            cod[0] = cod[0] + 1;
         }
 
-    } while (this->_board.get_tool("a1").get_type() != 'K');
+    } while (this->_board.get_tool(cod).get_type() != 'K');
 
 
     return cod;

@@ -23,6 +23,10 @@ void main()
     b = g.get_board();
     b.print_board();
 
+    std::string white_king_pos = "ab";
+    std::string black_king_pos = "ab";
+    
+
     while (adr != "exit" && adr != "Exit")
     {
 
@@ -35,6 +39,10 @@ void main()
             std::cout << "Black turn.." << std::endl;
         }
 
+        /*white_king_pos = g.get_white_king_pos();
+        black_king_pos = g.get_black_king_pos();*/
+        
+
         std::cout << "Enter cordination or enter exit to end the program: ";
         std::cin >> adr;
         std::cout << std::endl;
@@ -45,7 +53,6 @@ void main()
         adress_dst[1] = adr[3];
 
         Tool t = b.get_tool(adress_src);
-
 
         error = t.move_errors(adress_dst, b.get_tool(adress_dst));
         error_switch(error, b, t, adress_dst, g);

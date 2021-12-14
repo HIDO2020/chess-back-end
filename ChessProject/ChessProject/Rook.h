@@ -9,8 +9,8 @@ class Rook : public Tool
 {
 public:
     Rook(std::string pos, char type);
-    int move(std::string _dst, Tool t);
-    //void set_valid_moves(std::string pos);
+    int move(std::string _dst, Tool t, std::string king_pos);
+    void set_valid_moves(std::string pos);
 private:
-    //std::string valid_moves[POSSIBLE_MOVES];
+    std::string valid_moves[POSSIBLE_MOVES];
 };
