@@ -19,6 +19,10 @@ Board::Board(std::string _board)
 			{
 				this->_board[i][j] = Rook(pos, _board[count]);
 			}
+			else if (_board[count] == 'k' || _board[count] == 'K')
+			{
+				this->_board[i][j] = King(pos, _board[count]);
+			}
 			else
 			{
 				this->_board[i][j] = Tool(pos, _board[count]);
@@ -79,6 +83,12 @@ void Board::move_piece(std::string pos, Tool t)
 Tool Board::get_tool(std::string pos)
 {
 	int numColumn = 0, numRow = 0;
+	//check out of range 
+	if ((pos[0] > 104 || pos[0] < 97) || (pos[1] < 49 || pos[1] > 56))
+	{
+		Tool invalid_tool(pos, '#');
+		return invalid_tool;
+	}
 
 	numColumn = pos[0] - 97;    //asci from a --> 1(int)
 	numRow = pos[1] - 49;		//asci from 1 --> 1(int)

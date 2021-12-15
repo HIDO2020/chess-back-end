@@ -38,18 +38,19 @@ void Tool::set_type(char type)
     this->_type = type;
 }
 
-int Tool::move_errors(std::string _dst, Tool t)
+int Tool::move_errors(std::string _dst, Tool t, bool turn)
 {
     int numColumn = 0, numRow = 0;
 
-    //error 5 (first cause he checks for existence of the tool index)
-    if (t.get_pos() == " " || this->get_pos() == " ")
+    // error 5 (first cause he checks for existence of the tool index)
+    if ((t.get_pos()[0] > 104 || t.get_pos()[0] < 97) || (this->get_pos()[0] < 97 || this->get_pos()[0] > 104) ||
+        (t.get_pos()[1] > 56 || t.get_pos()[1] < 49) || (this->get_pos()[1] < 49 || this->get_pos()[1] > 56))
     {
         return invalid_index;
     }
 
     //error 2 - can't move empty space
-    if (this->get_type() == '#') //|| (isupper(this->get_type()) && isupper(dst.get_type())) ||
+    if (this->get_type() == '#' || this->get_color() != turn) //|| (isupper(this->get_type()) && isupper(dst.get_type())) ||
     {  //(!isupper(this->get_type()) && !isupper(dst.get_type())))
 
         return no_src;
@@ -88,10 +89,4 @@ std::string Tool::get_pos()
 bool Tool::get_color()
 {
     return this->_color;
-}
-
-int Tool::invalid_index_move(std::string _dst)
-{
-
-    return 0;
 }

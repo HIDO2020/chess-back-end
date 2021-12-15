@@ -7,7 +7,7 @@
 //full game
 //"RNBQKBNRPPPPPPPP################################pppppppprnbqkbnr0"
 
-void error_switch(int e, Board b, Tool &t, std::string adr, Game g);
+void error_switch(int e, Board &b, Tool &t, std::string adr, Game g);
 
 void main()
 {
@@ -21,11 +21,7 @@ void main()
     bool turn = true; //true - white turn | false - black turn
 
     b = g.get_board();
-    b.print_board();
-
-    std::string white_king_pos = "ab";
-    std::string black_king_pos = "ab";
-    
+    b.print_board();  
 
     while (adr != "exit" && adr != "Exit")
     {
@@ -38,11 +34,7 @@ void main()
         {
             std::cout << "Black turn.." << std::endl;
         }
-
-        /*white_king_pos = g.get_white_king_pos();
-        black_king_pos = g.get_black_king_pos();*/
         
-
         std::cout << "Enter cordination or enter exit to end the program: ";
         std::cin >> adr;
         std::cout << std::endl;
@@ -54,9 +46,12 @@ void main()
 
         Tool t = b.get_tool(adress_src);
 
-        error = t.move_errors(adress_dst, b.get_tool(adress_dst));
+        error = t.move_errors(adress_dst, b.get_tool(adress_dst), turn);
         error_switch(error, b, t, adress_dst, g);
-        g.add_turn(countTurns);
+        if (error == 0 || error == 1 || error == 8)
+        {
+            g.add_turn(countTurns);
+        }
         if (g.get_turn() % 2 == 0)
         {
             turn = true;
@@ -68,7 +63,7 @@ void main()
     }
 }
 
-void error_switch(int e, Board b, Tool &t, std::string adr, Game g)
+void error_switch(int e, Board &b, Tool &t, std::string adr, Game g)
 {
     switch (e)
     {

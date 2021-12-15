@@ -25,16 +25,12 @@ public:
     void set_pos(const std::string pos);
     void set_type(const char type);
 
-    int move_errors(std::string _dst, Tool t);
+    int move_errors(std::string _dst, Tool t, bool turn);
 
     char get_type();
     std::string get_pos();
     bool get_color();
 
-    //moves checks
-    int invalid_index_move(std::string _dst);
-    int invalid_tool_move(std::string _dst);
-    int invalid_check_move(std::string _pos);
 private:
     //feilds
     std::string _pos;
