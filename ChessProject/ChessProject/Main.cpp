@@ -11,6 +11,7 @@
 //"RNBQKBNRPPPPPPPP################################pppppppprnbqkbnr0"
 
 void error_switch(int e, Board &b, Tool &t, std::string adr, Game g);
+std::vector<std::string> change_vector(std::vector<std::string> rook_valid_moves, Board& b, Tool& t, Rook& r);
 
 void main()
 {
@@ -21,12 +22,15 @@ void main()
     std::string adress_src = "ab";
     std::string adr = "abcd";
     std::vector<std::string> rook_valid_moves;
+    std::vector<std::string> new_vector;
 
     bool turn = true; //true - white turn | false - black turn
     char king_check = 'K';  //K - white turn |k - black turn
 
     std::string tmp_curr = "ab";
     std::string tmp_king = "ab";
+
+    int num = 0, letter = 0;
 
     b = g.get_board();
     b.print_board();  
@@ -57,9 +61,25 @@ void main()
         if (t.get_type() == 'r' || t.get_type() == 'R') //rook
         {
             Rook r(t.get_pos(), t.get_type());
-            error = r.move(adress_dst, b.get_tool(adress_dst), turn);
+            ////slicing
+            r.set_valid_moves(r.get_pos());
             rook_valid_moves = r.get_valid_moves();
             rook_valid_moves.resize(14);
+            new_vector = change_vector(rook_valid_moves, b, t, r);
+
+            r.setter_valid_moves(new_vector);
+            for (std::string i : r.get_valid_moves())
+            {
+                std::cout << i << ' ';
+            }
+
+            error = r.move(adress_dst, b.get_tool(adress_dst), turn);
+            r.set_valid_moves(adress_dst);
+            rook_valid_moves = r.get_valid_moves();
+            rook_valid_moves.resize(14);
+            //slice
+            //rook_valid_moves = change_vector(rook_valid_moves, b, t, r);
+
             g.set_black_check(false);
             g.set_white_check(false);
             for (std::string i : rook_valid_moves)
@@ -80,7 +100,7 @@ void main()
                         }
                     }
                 }
-                std::cout << i << ' ';
+                //std::cout << i << ' ';
             }
             std::cout << std::endl;
         }
@@ -163,4 +183,79 @@ void error_switch(int e, Board &b, Tool &t, std::string adr, Game g)
     default:
         break;
     }
+}
+
+/*
+slicing the vector soo you can't jump over pieces
+*/
+std::vector<std::string> change_vector(std::vector<std::string> rook_valid_moves, Board& b, Tool& t, Rook& r)
+{
+    std::vector<std::string> new_vector;
+
+    std::string tmp_curr = "ab";
+
+    int num = 0, letter = 0;
+
+    new_vector.clear();
+    num = r.get_pos()[1] - 48;  //asci from 1 --> 1(int)
+    letter = r.get_pos()[0];    //asci from a --> 1(int)
+
+    while (num > 1)
+    {
+        num--;
+        tmp_curr[0] = letter;
+        tmp_curr[1] = num + 48;
+        if (b.get_tool(tmp_curr).get_type() != '#')
+        {
+            num = 1;    //skip
+        }
+        new_vector.push_back(tmp_curr);
+    }
+
+    num = r.get_pos()[1] - 48;  //asci from 1 --> 1(int)
+    letter = r.get_pos()[0];    //asci from a --> 1(int)
+
+    while (num < 8)
+    {
+        num++;
+        tmp_curr[0] = letter;
+        tmp_curr[1] = num + 48;
+        if (b.get_tool(tmp_curr).get_type() != '#')
+        {
+            num = 8;    //skip
+        }
+        new_vector.push_back(tmp_curr);
+    }
+
+    num = r.get_pos()[1];  //asci from 1 --> 1(int)
+    letter = r.get_pos()[0] - 96;    //asci from a --> 1(int)
+
+    while (letter > 1)
+    {
+        letter--;
+        tmp_curr[0] = letter + 96;
+        tmp_curr[1] = num;
+        if (b.get_tool(tmp_curr).get_type() != '#')
+        {
+            letter = 1;    //skip
+        }
+        new_vector.push_back(tmp_curr);
+    }
+
+    num = r.get_pos()[1];  //asci from 1 --> 1(int)
+    letter = r.get_pos()[0] - 96;    //asci from a --> 1(int)
+
+    while (letter < 8)
+    {
+        letter++;
+        tmp_curr[0] = letter + 96;
+        tmp_curr[1] = num;
+        if (b.get_tool(tmp_curr).get_type() != '#')
+        {
+            letter = 8;    //skip
+        }
+        new_vector.push_back(tmp_curr);
+    }
+
+    return new_vector;
 }
