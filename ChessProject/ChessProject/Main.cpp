@@ -45,8 +45,22 @@ void main()
         adress_dst[1] = adr[3];
 
         Tool t = b.get_tool(adress_src);
-
-        error = t.move_errors(adress_dst, b.get_tool(adress_dst), turn);
+        
+        if (t.get_type() == 'r' || t.get_type() == 'R') //rook
+        {
+            Rook r(t.get_pos(), t.get_type());
+            error = r.move(adress_dst, b.get_tool(adress_dst), turn);
+        }
+        else if (t.get_type() == 'k' || t.get_type() == 'K') //king
+        {
+            King k(t.get_pos(), t.get_type());
+            error = k.move(adress_dst, b.get_tool(adress_dst), turn);
+        }
+        else  
+        {
+            error = t.move_errors(adress_dst, b.get_tool(adress_dst), turn);
+        }
+        
         error_switch(error, b, t, adress_dst, g);
         if (error == 0 || error == 1 || error == 8)
         {

@@ -31,7 +31,7 @@ public:
     std::string get_pos();
     bool get_color();
 
-private:
+protected:
     //feilds
     std::string _pos;
     bool _color;

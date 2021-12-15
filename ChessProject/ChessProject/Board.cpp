@@ -25,7 +25,7 @@ Board::Board(std::string _board)
 			}
 			else
 			{
-				this->_board[i][j] = Tool(pos, _board[count]);
+				this->_board[i][j] = Empty(pos, _board[count]);
 			}
 			count--;
 		}

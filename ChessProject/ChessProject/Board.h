@@ -5,6 +5,7 @@
 #include "Tool.h"
 #include "Rook.h"
 #include "King.h"
+#include "Empty.h"
 
 #define ROWS 8
 #define COLUMNS 8

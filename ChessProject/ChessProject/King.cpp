@@ -19,4 +19,3 @@ int King::move(std::string _dst, Tool t, bool turn)
         return error;
     return 0;
 }
-
