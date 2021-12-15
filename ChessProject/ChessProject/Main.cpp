@@ -68,28 +68,16 @@ void main()
             new_vector = change_vector(rook_valid_moves, b, t, r);
 
             r.setter_valid_moves(new_vector);
-            //for (std::string i : r.get_valid_moves())
-            //{
-            //    std::cout << i << ' ';
-            //}
 
             error = r.move(adress_dst, b.get_tool(adress_dst), turn);
             r.set_valid_moves(adress_dst);
             rook_valid_moves = r.get_valid_moves();
             rook_valid_moves.resize(14);
 
-            for (std::string i : rook_valid_moves)
-            {
-                std::cout << i << ' ';
-            }
             std::cout << std::endl;
             //slice
             r.set_pos(adress_dst);
             rook_valid_moves = change_vector(rook_valid_moves, b, t, r);
-            for (std::string i : rook_valid_moves)
-            {
-                std::cout << i << ' ';
-            }
             std::cout << std::endl;
 
             g.set_black_check(false);
