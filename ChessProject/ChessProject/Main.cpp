@@ -3,6 +3,9 @@
 #include "Game.h"
 #include "Board.h"
 #include "Tool.h"
+#include <vector>
+
+#define POSSIBLE_MOVES 14
 
 //full game
 //"RNBQKBNRPPPPPPPP################################pppppppprnbqkbnr0"
@@ -17,8 +20,13 @@ void main()
     std::string adress_dst = "ab";
     std::string adress_src = "ab";
     std::string adr = "abcd";
+    std::vector<std::string> rook_valid_moves;
 
     bool turn = true; //true - white turn | false - black turn
+    char king_check = 'K';  //K - white turn |k - black turn
+
+    std::string tmp_curr = "ab";
+    std::string tmp_king = "ab";
 
     b = g.get_board();
     b.print_board();  
@@ -50,6 +58,31 @@ void main()
         {
             Rook r(t.get_pos(), t.get_type());
             error = r.move(adress_dst, b.get_tool(adress_dst), turn);
+            rook_valid_moves = r.get_valid_moves();
+            rook_valid_moves.resize(14);
+            g.set_black_check(false);
+            g.set_white_check(false);
+            for (std::string i : rook_valid_moves)
+            {
+                if (b.get_tool(i).get_type() == king_check)
+                {
+                    if (error == 0) //valid
+                    {
+
+                        error = 1;
+                        if (turn)
+                        {
+                            g.set_black_check(true);
+                        }
+                        else
+                        {
+                            g.set_white_check(true);
+                        }
+                    }
+                }
+                std::cout << i << ' ';
+            }
+            std::cout << std::endl;
         }
         else if (t.get_type() == 'k' || t.get_type() == 'K') //king
         {
@@ -69,10 +102,12 @@ void main()
         if (g.get_turn() % 2 == 0)
         {
             turn = true;
+            king_check = 'K';
         }
         else
         {
             turn = false;
+            king_check = 'k';
         }
     }
 }

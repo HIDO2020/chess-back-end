@@ -3,13 +3,14 @@
 Rook::Rook(std::string pos, char type) : Tool::Tool(pos, type)
 {
     set_valid_moves(pos);
+    this->valid_moves.resize(POSSIBLE_MOVES);
 }
 
 int Rook::move(std::string _dst, Tool t, bool turn)
 {
     int error = 0, i = 0;
     int numColumn = 0, numRow = 0;
-
+    this->valid_moves.clear();
     set_valid_moves(_dst);
 
     if (this->get_pos()[0] != t.get_pos()[0] && this->get_pos()[1] != t.get_pos()[1])
@@ -20,6 +21,8 @@ int Rook::move(std::string _dst, Tool t, bool turn)
     error = this->move_errors(_dst, t, turn);
     if (error != 0)
         return error;
+
+    
     return 0;
 }
 
@@ -35,7 +38,7 @@ void Rook::set_valid_moves(std::string pos)
         add += num;
         if (add == pos)
             continue;
-        this->valid_moves[count] = add;
+        this->valid_moves.push_back(add);
         count++;
     }
 
@@ -46,7 +49,12 @@ void Rook::set_valid_moves(std::string pos)
         add += pos[1];
         if (add == pos)
             continue;
-        this->valid_moves[count] = add;
+        this->valid_moves.push_back(add);
         count++;
     }
+}
+
+std::vector<std::string> Rook::get_valid_moves()
+{
+    return this->valid_moves;
 }

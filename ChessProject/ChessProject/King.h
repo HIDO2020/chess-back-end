@@ -14,5 +14,5 @@ public:
     int move(std::string _dst, Tool t, bool turn);
     //void set_valid_moves(std::string pos);
 private:
-    std::string valid_moves[POSSIBLE_MOVES];
+    std::string valid_moves[8];
 };
