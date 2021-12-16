@@ -21,6 +21,7 @@ public:
 	void print_board();
 	void move_piece(std::string pos, Tool t);
 	Tool get_tool(std::string pos);
+	Tool get_king(bool color);
 
 protected:
 	//fields

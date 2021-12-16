@@ -96,4 +96,17 @@ Tool Board::get_tool(std::string pos)
 	return this->_board[numRow][numColumn];
 }
 
-
+Tool Board::get_king(bool color)
+{
+	for (int i = 0; i < 8; i++)
+	{
+		for (int j = 0; j < 8; j++)
+		{
+			if (this->_board[i][j].get_color() == color && (this->_board[i][j].get_type() == 'k' ||
+				this->_board[i][j].get_type() == 'K'))
+			{
+				return this->_board[i][j];
+			}
+		}
+	}
+}

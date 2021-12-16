@@ -14,7 +14,7 @@ public:
     void set_valid_moves(std::string pos);
     //setter
     void setter_valid_moves(std::vector<std::string> valid);
-    //getter
+    ////getter
     std::vector<std::string> get_valid_moves();
 
 protected:

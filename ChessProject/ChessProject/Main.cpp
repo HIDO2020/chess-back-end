@@ -23,6 +23,7 @@ void main()
     std::string adr = "abcd";
     std::vector<std::string> rook_valid_moves;
     std::vector<std::string> new_vector;
+    std::vector<std::string> check_vector;
 
     bool turn = true; //true - white turn | false - black turn
     char king_check = 'K';  //K - white turn |k - black turn
@@ -31,6 +32,7 @@ void main()
     std::string tmp_king = "ab";
 
     int num = 0, letter = 0;
+    int i = 0, j = 0;
 
     b = g.get_board();
     b.print_board();  
@@ -70,6 +72,54 @@ void main()
             r.setter_valid_moves(new_vector);
 
             error = r.move(adress_dst, b.get_tool(adress_dst), turn);
+
+            //check error4
+            check_vector.clear();
+            check_vector = new_vector;
+            
+            for (j = 1; j<= 8; j++)
+            {
+                for (i = 1; i <= 8; i++)
+                {
+                    tmp_curr[0] = j + 96;
+                    tmp_curr[1] = i + 48;
+                    Tool t = b.get_tool(tmp_curr);
+                    if (turn)
+                    {
+                        if (t.get_type() != 'R')
+                        {
+                            Rook r_tmp(t.get_pos(), t.get_type());
+                            //slicing
+                            r_tmp.set_valid_moves(r_tmp.get_pos());
+                            rook_valid_moves = r_tmp.get_valid_moves();
+                            rook_valid_moves.resize(14);
+                            new_vector = change_vector(rook_valid_moves, b, t, r_tmp);
+                            check_vector.insert(std::end(new_vector), std::begin(check_vector), std::end(check_vector));
+                        }
+                    }
+                    else
+                    {
+                        if (t.get_type() == 'r')
+                        {
+                            Rook r_tmp(t.get_pos(), t.get_type());
+                            //slicing
+                            r_tmp.set_valid_moves(r_tmp.get_pos());
+                            rook_valid_moves = r_tmp.get_valid_moves();
+                            rook_valid_moves.resize(14);
+                            new_vector = change_vector(rook_valid_moves, b, t, r_tmp);
+                            check_vector.insert(std::end(new_vector), std::begin(check_vector), std::end(check_vector));
+                        }
+                    }   
+                }
+            }
+
+            if (std::find(check_vector.begin(), check_vector.end(), r.get_pos()) != check_vector.end())
+            {
+                error = 4;
+                r.move(adress_src, b.get_tool(adress_src), turn);       //back
+            }
+
+
             r.set_valid_moves(adress_dst);
             rook_valid_moves = r.get_valid_moves();
             rook_valid_moves.resize(14);
@@ -104,6 +154,8 @@ void main()
             }
             std::cout << std::endl;
         }
+
+
         else if (t.get_type() == 'k' || t.get_type() == 'K') //king
         {
             King k(t.get_pos(), t.get_type());
