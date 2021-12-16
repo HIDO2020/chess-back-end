@@ -17,7 +17,7 @@ void main()
 {
 	int error = 1, countTurns = 0;
 	Board b;
-	Game g("#######R#######K###########################################rk###0");
+	Game g("K#######R#######################################r#######k########0");
     std::string adress_dst = "ab";
     std::string adress_src = "ab";
     std::string adr = "abcd";
@@ -120,6 +120,9 @@ void main()
                 error = 4;
                 //r.move(adress_src, b.get_tool(adress_src), turn);       //back
                 b.move_piece(adress_src, t);
+                Tool t = b.get_tool(adress_dst);
+                t.set_type('#');
+                b.move_piece(adress_dst, t);
             }
 
 
