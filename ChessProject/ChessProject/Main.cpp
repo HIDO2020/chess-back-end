@@ -12,12 +12,13 @@
 
 void error_switch(int e, Board &b, Tool &t, std::string adr, Game g);
 std::vector<std::string> change_vector(std::vector<std::string> rook_valid_moves, Board b, Tool t, Rook r);
+std::vector<std::string> get_enemy_valid_moves(bool turn, Board b);
 
 void main()
 {
 	int error = 1, countTurns = 0;
 	Board b;
-	Game g("K#######R#######################################r#######k########0");
+	Game g("K#######RR######################################r##r####k########0");
     std::string adress_dst = "ab";
     std::string adress_src = "ab";
     std::string adr = "abcd";
@@ -59,7 +60,7 @@ void main()
         adress_dst[1] = adr[3];
 
         Tool t = b.get_tool(adress_src);
-        
+
         if (t.get_type() == 'r' || t.get_type() == 'R') //rook
         {
             Rook r(t.get_pos(), t.get_type());
@@ -74,51 +75,13 @@ void main()
             error = r.move(adress_dst, b.get_tool(adress_dst), turn);
             b.move_piece(adress_dst, t);
 
+            check_vector = get_enemy_valid_moves(turn, b);
 
-            //check error4
-            check_vector.clear();
-            //check_vector = new_vector;
-            
-            for (j = 1; j<= 8; j++)
-            {
-                for (i = 1; i <= 8; i++)
-                {
-                    tmp_curr[0] = j + 96;
-                    tmp_curr[1] = i + 48;
-                    Tool t = b.get_tool(tmp_curr);
-                    if (turn)
-                    {
-                        if (t.get_type() == 'R')
-                        {
-                            Rook r_tmp(t.get_pos(), t.get_type());
-                            //slicing
-                            r_tmp.set_valid_moves(r_tmp.get_pos());
-                            rook_valid_moves = r_tmp.get_valid_moves();
-                            rook_valid_moves.resize(14);
-                            new_vector = change_vector(rook_valid_moves, b, t, r_tmp);
-                            std::copy(new_vector.begin(), new_vector.end(), std::back_inserter(check_vector));
-                        }
-                    }
-                    else
-                    {
-                        if (t.get_type() == 'r')
-                        {
-                            Rook r_tmp(t.get_pos(), t.get_type());
-                            //slicing
-                            r_tmp.set_valid_moves(r_tmp.get_pos());
-                            rook_valid_moves = r_tmp.get_valid_moves();
-                            rook_valid_moves.resize(14);
-                            new_vector = change_vector(rook_valid_moves, b, t, r_tmp);
-                            std::copy(new_vector.begin(), new_vector.end(), std::back_inserter(check_vector));
-                        }
-                    }   
-                }
-            }
-
+            //checks if the pos of the king is in the valid moves of the enemy
             if (std::find(check_vector.begin(), check_vector.end(), b.get_king(turn).get_pos()) != check_vector.end())
             {
                 error = 4;
-                //r.move(adress_src, b.get_tool(adress_src), turn);       //back
+                //back
                 b.move_piece(adress_src, t);
                 Tool t = b.get_tool(adress_dst);
                 t.set_type('#');
@@ -166,6 +129,20 @@ void main()
         {
             King k(t.get_pos(), t.get_type());
             error = k.move(adress_dst, b.get_tool(adress_dst), turn);
+            b.move_piece(adress_dst, t);
+
+            check_vector = get_enemy_valid_moves(turn, b);
+
+            //checks if the pos of the king is in the valid moves of the enemy
+            if (std::find(check_vector.begin(), check_vector.end(), b.get_king(!turn).get_pos()) != check_vector.end())
+            {
+                error = 4;
+                //back
+                b.move_piece(adress_src, t);
+                Tool t = b.get_tool(adress_dst);
+                t.set_type('#');
+                b.move_piece(adress_dst, t);
+            }
         }
         else  
         {
@@ -316,4 +293,51 @@ std::vector<std::string> change_vector(std::vector<std::string> rook_valid_moves
     }
 
     return new_vector;
+}
+
+//get enenmy valids moves
+std::vector<std::string> get_enemy_valid_moves(bool turn, Board b)
+{
+    int i = 0, j = 0;
+    std::vector<std::string> check_vector;
+    std::vector<std::string> new_vector;
+    check_vector.clear();
+    std::string tmp_curr = "ab";
+
+    for (j = 1; j <= 8; j++)
+    {
+        for (i = 1; i <= 8; i++)
+        {
+            tmp_curr[0] = j + 96;
+            tmp_curr[1] = i + 48;
+            Tool t = b.get_tool(tmp_curr);
+            if (turn)
+            {
+                if (t.get_type() == 'R')
+                {
+                    Rook r_tmp(t.get_pos(), t.get_type());
+                    //slicing
+                    r_tmp.set_valid_moves(r_tmp.get_pos());
+                    new_vector = r_tmp.get_valid_moves();
+                    new_vector.resize(14);
+                    new_vector = change_vector(new_vector, b, t, r_tmp);
+                    std::copy(new_vector.begin(), new_vector.end(), std::back_inserter(check_vector));
+                }
+            }
+            else
+            {
+                if (t.get_type() == 'r')
+                {
+                    Rook r_tmp(t.get_pos(), t.get_type());
+                    //slicing
+                    r_tmp.set_valid_moves(r_tmp.get_pos());
+                    new_vector = r_tmp.get_valid_moves();
+                    new_vector.resize(14);
+                    new_vector = change_vector(new_vector, b, t, r_tmp);
+                    std::copy(new_vector.begin(), new_vector.end(), std::back_inserter(check_vector));
+                }
+            }
+        }
+    }
+    return check_vector;
 }
