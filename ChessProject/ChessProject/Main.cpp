@@ -72,10 +72,12 @@ void main()
             r.setter_valid_moves(new_vector);
 
             error = r.move(adress_dst, b.get_tool(adress_dst), turn);
+            b.move_piece(adress_dst, t);
+
 
             //check error4
             check_vector.clear();
-            check_vector = new_vector;
+            //check_vector = new_vector;
             
             for (j = 1; j<= 8; j++)
             {
@@ -86,7 +88,7 @@ void main()
                     Tool t = b.get_tool(tmp_curr);
                     if (turn)
                     {
-                        if (t.get_type() != 'R')
+                        if (t.get_type() == 'R')
                         {
                             Rook r_tmp(t.get_pos(), t.get_type());
                             //slicing
@@ -94,7 +96,7 @@ void main()
                             rook_valid_moves = r_tmp.get_valid_moves();
                             rook_valid_moves.resize(14);
                             new_vector = change_vector(rook_valid_moves, b, t, r_tmp);
-                            check_vector.insert(std::end(new_vector), std::begin(check_vector), std::end(check_vector));
+                            std::copy(new_vector.begin(), new_vector.end(), std::back_inserter(check_vector));
                         }
                     }
                     else
@@ -107,16 +109,17 @@ void main()
                             rook_valid_moves = r_tmp.get_valid_moves();
                             rook_valid_moves.resize(14);
                             new_vector = change_vector(rook_valid_moves, b, t, r_tmp);
-                            check_vector.insert(std::end(new_vector), std::begin(check_vector), std::end(check_vector));
+                            std::copy(new_vector.begin(), new_vector.end(), std::back_inserter(check_vector));
                         }
                     }   
                 }
             }
 
-            if (std::find(check_vector.begin(), check_vector.end(), r.get_pos()) != check_vector.end())
+            if (std::find(check_vector.begin(), check_vector.end(), b.get_king(turn).get_pos()) != check_vector.end())
             {
                 error = 4;
-                r.move(adress_src, b.get_tool(adress_src), turn);       //back
+                //r.move(adress_src, b.get_tool(adress_src), turn);       //back
+                b.move_piece(adress_src, t);
             }
 
 
