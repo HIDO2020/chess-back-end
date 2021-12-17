@@ -8,8 +8,7 @@ Rook::Rook(std::string pos, char type) : Tool::Tool(pos, type)
 
 int Rook::move(std::string _dst, Tool t, bool turn)
 {
-    int error = 0, i = 0;
-    int numColumn = 0, numRow = 0;
+    int error = 0;
     this->valid_moves.resize(14);
 
     if (std::find(this->valid_moves.begin(), this->valid_moves.end(), _dst) != this->valid_moves.end())
@@ -22,7 +21,6 @@ int Rook::move(std::string _dst, Tool t, bool turn)
     {
         return invalid_move;
     }
-    
     return 0;
 }
 

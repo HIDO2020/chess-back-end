@@ -11,6 +11,7 @@ class Rook : public Tool
 public:
     Rook(std::string pos, char type);
     int move(std::string _dst, Tool t, bool turn);
+
     void set_valid_moves(std::string pos);
     //setter
     void setter_valid_moves(std::vector<std::string> valid);

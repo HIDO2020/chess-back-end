@@ -61,11 +61,7 @@ int Tool::move_errors(std::string _dst, Tool t, bool turn)
     {
         return invalid_dst;
     }
-
-    //error 1 + 4
-    //to do: if the king is in the valid array of the tool
     
-
     //error 7 - can't move tool to his current location)
     if (this->get_pos() == t.get_pos())
     {
