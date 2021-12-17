@@ -6,6 +6,8 @@
 #include "Rook.h"
 #include "King.h"
 #include "Empty.h"
+#include "Bishop.h"
+#include "Queen.h"
 
 #define ROWS 8
 #define COLUMNS 8

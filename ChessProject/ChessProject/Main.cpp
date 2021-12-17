@@ -139,9 +139,6 @@ void main()
                     k.set_pos(adress_dst);
 
                     check_vector = get_enemy_valid_moves(turn, b);
-                    //for (std::string i : check_vector)
-                    //    std::cout << i << ' ';
-                    //std::cout << std::endl;
 
                     //checks if the pos of the king is in the valid moves of the enemy
                     if (std::find(check_vector.begin(), check_vector.end(), adress_dst) != check_vector.end())

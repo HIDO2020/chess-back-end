@@ -2,18 +2,18 @@
 #include <iostream>
 
 
-Board::Board(std::string _board) 
+Board::Board(std::string _board)
 {
 	char letterColumn = ' ';
-	std::string pos = "ab";			//f3 for example
+	std::string pos = "ab";            //f3 for example
 	int i = 0, j = 0;
-	int count = 63;			//the amount of chars in the string from 0 - 63
-	for (i = 0 ; i < ROWS; i++)
+	int count = 63;            //the amount of chars in the string from 0 - 63
+	for (i = 0; i < ROWS; i++)
 	{
-		for (j = COLUMNS -1 ; j >= 0; j--)
+		for (j = COLUMNS - 1; j >= 0; j--)
 		{
-			letterColumn = j + 97;		//asci from 1 --> a
-			pos[0] = letterColumn;		
+			letterColumn = j + 97;        //asci from 1 --> a
+			pos[0] = letterColumn;
 			pos[1] = i + 49;
 			if (_board[count] == 'r' || _board[count] == 'R')
 			{
@@ -22,6 +22,14 @@ Board::Board(std::string _board)
 			else if (_board[count] == 'k' || _board[count] == 'K')
 			{
 				this->_board[i][j] = King(pos, _board[count]);
+			}
+			else if (_board[count] == 'q' || _board[count] == 'Q')
+			{
+				this->_board[i][j] = Queen(pos, _board[count]);
+			}
+			else if (_board[count] == 'b' || _board[count] == 'B')
+			{
+				this->_board[i][j] = Bishop(pos, _board[count]);
 			}
 			else
 			{
