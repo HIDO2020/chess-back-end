@@ -90,6 +90,9 @@ void main()
                     b.move_piece(adress_dst, t);
 
                     check_vector = get_enemy_valid_moves(turn, b);
+                    for (std::string i : check_vector)
+                        std::cout << i << ' ';
+                    std::cout << std::endl;
 
                     //checks if the pos of the king is in the valid moves of the enemy
                     if (std::find(check_vector.begin(), check_vector.end(), b.get_king(turn).get_pos()) != check_vector.end())
@@ -116,7 +119,10 @@ void main()
                     g.set_black_check(false);
                     g.set_white_check(false);
                     vector_valid_moves = rook_valid_moves;
-                    error = check_check(vector_valid_moves, king_check, b, turn, g);
+                    if (error == 0)
+                    {
+                        error = check_check(vector_valid_moves, king_check, b, turn, g);
+                    }
                 }
                 
             }
