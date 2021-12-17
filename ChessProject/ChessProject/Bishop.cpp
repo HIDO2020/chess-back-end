@@ -16,7 +16,7 @@ int Bishop::move(std::string _dst, Tool t, bool turn)
     int numColumn = 0, numRow = 0;
     this->valid_moves.resize(14);
 
-    if (std::find(this->valid_moves.begin(), this->valid_moves.end(), _dst) != this->valid_moves.end()) //what if dst is valid_moves.end()?
+    if (std::find(this->valid_moves.begin(), this->valid_moves.end(), _dst) != this->valid_moves.end()) 
     {
         error = this->move_errors(_dst, t, turn);
         if (error != 0)

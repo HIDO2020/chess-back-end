@@ -2,6 +2,8 @@
 #include <string>
 #include "Game.h"
 #include "Board.h"
+#include "Bishop.h"
+#include "Queen.h"
 #include "Tool.h"
 #include <vector>
 
@@ -11,7 +13,7 @@
 //"RNBQKBNRPPPPPPPP################################pppppppprnbqkbnr0"
 
 void error_switch(int e, Board &b, Tool &t, std::string adr, Game g);
-std::vector<std::string> change_vector(std::vector<std::string> rook_valid_moves, Board b, Tool t, Rook r);
+std::vector<std::string> change_vector(std::vector<std::string> rook_valid_moves, Board b, Tool t);
 std::vector<std::string> get_enemy_valid_moves(bool turn, Board b);
 int check_check(std::vector<std::string> valid_moves, char king_check, Board b, bool turn, Game& g);
 
@@ -19,11 +21,10 @@ void main()
 {
 	int error = 1, countTurns = 0;
 	Board b;
-	Game g("K#######R##R####################################r##r####k########0");
+	Game g("R#BQKB#R################################################r#bqkb#r0");
     std::string adress_dst = "ab";
     std::string adress_src = "ab";
     std::string adr = "abcd";
-    std::vector<std::string> rook_valid_moves;
     std::vector<std::string> king_valid_moves;
     std::vector<std::string> new_vector;
     std::vector<std::string> check_vector;
@@ -77,10 +78,21 @@ void main()
             {
                 Rook r(t.get_pos(), t.get_type());
                 //slicing
+                vector_valid_moves.clear();
                 r.set_valid_moves(r.get_pos());
-                rook_valid_moves = r.get_valid_moves();
-                rook_valid_moves.resize(14);
-                new_vector = change_vector(rook_valid_moves, b, t, r);
+                vector_valid_moves = r.get_valid_moves();
+                vector_valid_moves.resize(14);
+
+                for (auto i : vector_valid_moves)
+                    std::cout << i << ' ';
+                std::cout << std::endl;
+
+                new_vector.clear();
+                new_vector = change_vector(vector_valid_moves, b, t);
+
+                for (auto i : new_vector)
+                    std::cout << i << ' ';
+                std::cout << std::endl;
 
                 r.setter_valid_moves(new_vector);
 
@@ -107,18 +119,18 @@ void main()
 
 
                     r.set_valid_moves(adress_dst);
-                    rook_valid_moves = r.get_valid_moves();
-                    rook_valid_moves.resize(14);
+                    vector_valid_moves = r.get_valid_moves();
+                    vector_valid_moves.resize(14);
 
                     std::cout << std::endl;
                     //slice
                     r.set_pos(adress_dst);
-                    rook_valid_moves = change_vector(rook_valid_moves, b, t, r);
+                    vector_valid_moves = change_vector(vector_valid_moves, b, t);
                     std::cout << std::endl;
 
                     g.set_black_check(false);
                     g.set_white_check(false);
-                    vector_valid_moves = rook_valid_moves;
+                    vector_valid_moves;
                     if (error == 0)
                     {
                         error = check_check(vector_valid_moves, king_check, b, turn, g);
@@ -158,6 +170,63 @@ void main()
                     }
                 }
             }
+
+            else if (t.get_type() == 'b' || t.get_type() == 'B') //bishop
+            {
+                Bishop bi(t.get_pos(), t.get_type());
+                //slicing
+                bi.set_valid_moves(bi.get_pos());
+                vector_valid_moves = bi.get_valid_moves();
+                vector_valid_moves.resize(14);
+
+                new_vector = change_vector(vector_valid_moves, b, t);
+
+                bi.setter_valid_moves(new_vector);
+
+                for (auto i : new_vector)
+                    std::cout << i << ' ';
+                std::cout << std::endl;
+
+                error = bi.move(adress_dst, b.get_tool(adress_dst), turn);
+                if (error == 0)
+                {
+                    b.move_piece(adress_dst, t);
+
+                    check_vector = get_enemy_valid_moves(turn, b);
+
+                    //checks if the pos of the king is in the valid moves of the enemy
+                    if (std::find(check_vector.begin(), check_vector.end(), b.get_king(turn).get_pos()) != check_vector.end())
+                    {
+                        error = 4;
+                        //back
+                        b.move_piece(adress_src, t);
+                        Tool t = b.get_tool(adress_dst);
+                        t.set_type('#');
+                        b.move_piece(adress_dst, t);
+                    }
+
+
+                    bi.set_valid_moves(adress_dst);
+                    vector_valid_moves = bi.get_valid_moves();
+                    vector_valid_moves.resize(14);
+
+                    std::cout << std::endl;
+                    //slice
+                    bi.set_pos(adress_dst);
+                    vector_valid_moves = change_vector(vector_valid_moves, b, t);
+                    std::cout << std::endl;
+
+                    g.set_black_check(false);
+                    g.set_white_check(false);
+                    vector_valid_moves = vector_valid_moves;
+                    if (error == 0)
+                    {
+                        error = check_check(vector_valid_moves, king_check, b, turn, g);
+                    }
+                }
+            }
+
+
             else
             {
                 error = t.move_errors(adress_dst, b.get_tool(adress_dst), turn);
@@ -238,73 +307,71 @@ void error_switch(int e, Board &b, Tool &t, std::string adr, Game g)
 /*
 slicing the vector soo you can't jump over pieces
 */
-std::vector<std::string> change_vector(std::vector<std::string> rook_valid_moves, Board b, Tool t, Rook r)
+std::vector<std::string> change_vector(std::vector<std::string> valid_moves, Board b, Tool t)
 {
     std::vector<std::string> new_vector;
-
     std::string tmp_curr = "ab";
-
-    int num = 0, letter = 0;
-
+    int count = 0, loop_count = 0;
+    std::string pos = t.get_pos();
     new_vector.clear();
-    num = r.get_pos()[1] - 48;  //asci from 1 --> 1(int)
-    letter = r.get_pos()[0];    //asci from a --> 1(int)
 
-    while (num > 1)
+    count = pos[1] - 49;  //asci from 1 --> 1(int)
+    loop_count = 0;
+
+    while (count > 1)
     {
-        num--;
-        tmp_curr[0] = letter;
-        tmp_curr[1] = num + 48;
-        if (b.get_tool(tmp_curr).get_type() != '#')
+        count--;
+        if (b.get_tool(valid_moves[count]).get_type() != '#')
         {
-            num = 1;    //skip
+            new_vector.push_back(valid_moves[count]);    //skip
+            break;
         }
-        new_vector.push_back(tmp_curr);
+        new_vector.push_back(valid_moves[count]);
+        loop_count++;
     }
 
-    num = r.get_pos()[1] - 48;  //asci from 1 --> 1(int)
-    letter = r.get_pos()[0];    //asci from a --> 1(int)
+    count = pos[1] - 50;  //asci from 1 --> 1(int)
+    loop_count = 0;
 
-    while (num < 8)
+    while (count < 8)
     {
-        num++;
-        tmp_curr[0] = letter;
-        tmp_curr[1] = num + 48;
-        if (b.get_tool(tmp_curr).get_type() != '#')
+        count++;
+        if (b.get_tool(valid_moves[count]).get_type() != '#')
         {
-            num = 8;    //skip
+            new_vector.push_back(valid_moves[count]);    //skip
+            break;
         }
-        new_vector.push_back(tmp_curr);
+        new_vector.push_back(valid_moves[count]);
+        loop_count++;
     }
 
-    num = r.get_pos()[1];  //asci from 1 --> 1(int)
-    letter = r.get_pos()[0] - 96;    //asci from a --> 1(int)
+    count = 7 + t.get_pos()[0] - 97;    //asci from a --> 1(int)
+    loop_count = 0;
 
-    while (letter > 1)
+    while (count > 7)
     {
-        letter--;
-        tmp_curr[0] = letter + 96;
-        tmp_curr[1] = num;
-        if (b.get_tool(tmp_curr).get_type() != '#')
+        count--;
+        if (b.get_tool(valid_moves[count]).get_type() != '#')
         {
-            letter = 1;    //skip
+            new_vector.push_back(valid_moves[count]);    //skip
+            break;
         }
-        new_vector.push_back(tmp_curr);
+        new_vector.push_back(valid_moves[count]);
     }
 
-    num = r.get_pos()[1];  //asci from 1 --> 1(int)
-    letter = r.get_pos()[0] - 96;    //asci from a --> 1(int)
+    count = 7 + t.get_pos()[0] - 98;    //asci from a --> 1(int)
+    loop_count = 0;
 
-    while (letter < 8)
+    while (count < 8)
     {
-        letter++;
-        tmp_curr[0] = letter + 96;
-        tmp_curr[1] = num;
-        if (b.get_tool(tmp_curr).get_type() != '#')
+        count++;
+        if (b.get_tool(valid_moves[count]).get_type() != '#')
         {
-            letter = 8;    //skip
+            new_vector.push_back(valid_moves[count]);    //skip
+            break;
         }
-        new_vector.push_back(tmp_curr);
+        new_vector.push_back(valid_moves[count]);
+        loop_count++;
     }
 
     return new_vector;
@@ -335,7 +402,7 @@ std::vector<std::string> get_enemy_valid_moves(bool turn, Board b)
                     r_tmp.set_valid_moves(r_tmp.get_pos());
                     new_vector = r_tmp.get_valid_moves();
                     new_vector.resize(14);
-                    new_vector = change_vector(new_vector, b, t, r_tmp);
+                    new_vector = change_vector(new_vector, b, t);
                     std::copy(new_vector.begin(), new_vector.end(), std::back_inserter(check_vector));
                 }
             }
@@ -348,7 +415,7 @@ std::vector<std::string> get_enemy_valid_moves(bool turn, Board b)
                     r_tmp.set_valid_moves(r_tmp.get_pos());
                     new_vector = r_tmp.get_valid_moves();
                     new_vector.resize(14);
-                    new_vector = change_vector(new_vector, b, t, r_tmp);
+                    new_vector = change_vector(new_vector, b, t);
                     std::copy(new_vector.begin(), new_vector.end(), std::back_inserter(check_vector));
                 }
             }
