@@ -18,7 +18,7 @@ void main()
 {
 	int error = 1, countTurns = 0;
 	Board b;
-	Game g("K#######RR######################################r##r####k########0");
+	Game g("K#######R##R####################################r##r####k########0");
     std::string adress_dst = "ab";
     std::string adress_src = "ab";
     std::string adr = "abcd";
@@ -130,11 +130,15 @@ void main()
             King k(t.get_pos(), t.get_type());
             error = k.move(adress_dst, b.get_tool(adress_dst), turn);
             b.move_piece(adress_dst, t);
+            k.set_pos(adress_dst);
 
             check_vector = get_enemy_valid_moves(turn, b);
+            for (std::string i : check_vector)
+                std::cout << i << ' ';
+            std::cout << std::endl;
 
             //checks if the pos of the king is in the valid moves of the enemy
-            if (std::find(check_vector.begin(), check_vector.end(), b.get_king(!turn).get_pos()) != check_vector.end())
+            if (std::find(check_vector.begin(), check_vector.end(), adress_dst) != check_vector.end())
             {
                 error = 4;
                 //back
