@@ -83,10 +83,6 @@ void main()
                 vector_valid_moves = r.get_valid_moves();
                 vector_valid_moves.resize(14);
 
-                for (auto i : vector_valid_moves)
-                    std::cout << i << ' ';
-                std::cout << std::endl;
-
                 new_vector.clear();
                 new_vector = change_vector(vector_valid_moves, b, t);
 
@@ -283,6 +279,12 @@ void main()
         if (error == 0 || error == 1 || error == 8)
         {
             g.add_turn(countTurns);
+        }
+        else
+        {
+            for (auto i : vector_valid_moves)
+                std::cout << i << ' ';
+            std::cout << std::endl;
         }
         if (g.get_turn() % 2 == 0)
         {
