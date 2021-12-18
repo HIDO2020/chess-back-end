@@ -21,7 +21,7 @@ void main()
 {
 	int error = 1, countTurns = 0;
 	Board b;
-	Game g("R#BQKB#R################################################r#bqkb#r0");
+	Game g("R#BQKB#R#########################################r########bqkb#r0");
     std::string adress_dst = "ab";
     std::string adress_src = "ab";
     std::string adr = "abcd";
@@ -242,61 +242,61 @@ void main()
 
             else if (t.get_type() == 'q' || t.get_type() == 'Q') //Queen
             {
-            Queen q(t.get_pos(), t.get_type());
-            //slicing
-            q.set_valid_moves(q.get_pos());
-            vector_valid_moves = q.get_valid_moves();
-            vector_valid_moves.resize(28);
-
-            for (auto i : vector_valid_moves)
-                std::cout << i << ' ';
-            std::cout << std::endl;
-
-            new_vector = change_vector(vector_valid_moves, b, t);
-
-            for (auto i : new_vector)
-                std::cout << i << ' ';
-            std::cout << std::endl;
-
-            q.setter_valid_moves(new_vector);
-
-            error = q.move(adress_dst, b.get_tool(adress_dst), turn);
-            if (error == 0)
-            {
-                b.move_piece(adress_dst, t);
-
-                check_vector = get_enemy_valid_moves(turn, b);
-
-                //checks if the pos of the king is in the valid moves of the enemy
-                if (std::find(check_vector.begin(), check_vector.end(), b.get_king(turn).get_pos()) != check_vector.end())
-                {
-                    error = 4;
-                    //back
-                    b.move_piece(adress_src, t);
-                    Tool t = b.get_tool(adress_dst);
-                    t.set_type('#');
-                    b.move_piece(adress_dst, t);
-                }
-
-
-                q.set_valid_moves(adress_dst);
+                Queen q(t.get_pos(), t.get_type());
+                //slicing
+                q.set_valid_moves(q.get_pos());
                 vector_valid_moves = q.get_valid_moves();
-                vector_valid_moves.resize(14);
+                vector_valid_moves.resize(28);
 
-                std::cout << std::endl;
-                //slice
-                q.set_pos(adress_dst);
-                vector_valid_moves = change_vector(vector_valid_moves, b, t);
+                for (auto i : vector_valid_moves)
+                    std::cout << i << ' ';
                 std::cout << std::endl;
 
-                g.set_black_check(false);
-                g.set_white_check(false);
-                vector_valid_moves = vector_valid_moves;
-                if (error == 0)
-                {
-                    error = check_check(vector_valid_moves, king_check, b, turn, g);
-                }
-            }
+                new_vector = change_vector(vector_valid_moves, b, t);
+
+                for (auto i : new_vector)
+                    std::cout << i << ' ';
+                std::cout << std::endl;
+
+                q.setter_valid_moves(new_vector);
+
+                error = q.move(adress_dst, b.get_tool(adress_dst), turn);
+                //if (error == 0)
+                //{
+                //    b.move_piece(adress_dst, t);
+
+                //    check_vector = get_enemy_valid_moves(turn, b);
+
+                //    //checks if the pos of the king is in the valid moves of the enemy
+                //    if (std::find(check_vector.begin(), check_vector.end(), b.get_king(turn).get_pos()) != check_vector.end())
+                //    {
+                //        error = 4;
+                //        //back
+                //        b.move_piece(adress_src, t);
+                //        Tool t = b.get_tool(adress_dst);
+                //        t.set_type('#');
+                //        b.move_piece(adress_dst, t);
+                //    }
+
+
+                //    q.set_valid_moves(adress_dst);
+                //    vector_valid_moves = q.get_valid_moves();
+                //    vector_valid_moves.resize(14);
+
+                //    std::cout << std::endl;
+                //    //slice
+                //    q.set_pos(adress_dst);
+                //    vector_valid_moves = change_vector(vector_valid_moves, b, t);
+                //    std::cout << std::endl;
+
+                //    g.set_black_check(false);
+                //    g.set_white_check(false);
+                //    vector_valid_moves = vector_valid_moves;
+                //    if (error == 0)
+                //    {
+                //        error = check_check(vector_valid_moves, king_check, b, turn, g);
+                //    }
+                //}
             }
 
 
@@ -384,129 +384,153 @@ std::vector<std::string> change_vector(std::vector<std::string> valid_moves, Boa
 {
     std::vector<std::string> new_vector;
     std::string tmp_curr = "ab";
-    int count = 0, loop_count = 0, loop_countB = 0, size = 0;
+    int count = 0, counter = 0, queen_counter = 0;
     std::string pos = t.get_pos();
     new_vector.clear();
 
-    count = pos[1] - 49;  //asci from 1 --> 1(int)
-    loop_count = 0;
+    //NORTH SOUTH WEST EAST
+    int N = 0, S = 0, W = 0, E = 0;
+    int Ne = 0, Se = 0, Nw = 0, Sw = 0;
 
-    while (count > 1)
+    N = 8 - pos[1] + 48;
+    S = pos[1] - 1 + -48;
+    W = pos[0] - 'a';
+    E = 'h' - pos[0];
+
+    count = 0, counter = 0;
+    Ne = std::min(N, E);
+
+    if (t.get_type() == 'b' || t.get_type() == 'B' || t.get_type() == 'q' || t.get_type() == 'Q')
     {
-        if (count + 1 > valid_moves.size())
+
+        while (counter < Ne)
         {
-            break;
-        }
-        count--;
-        loop_count++;
-        if (count > 0)
-        {
-            if (b.get_tool(valid_moves[count]).get_pos()[0] > b.get_tool(valid_moves[count - 1]).get_pos()[0])
+            if (b.get_tool(valid_moves[count]).get_type() != '#')
             {
-                loop_count--;
+                new_vector.push_back(valid_moves[count]);    //skip
                 break;
             }
+            new_vector.push_back(valid_moves[count]);
+            count++;
+            counter++;
         }
 
-        if (b.get_tool(valid_moves[count]).get_type() != '#')
+        counter = 0;
+        count = Ne;
+        Sw = std::min(S, W);
+
+        while (counter < Sw)
         {
-            new_vector.push_back(valid_moves[count]);    //skip
-            break;
+            if (b.get_tool(valid_moves[count]).get_type() != '#')
+            {
+                new_vector.push_back(valid_moves[count]);    //skip
+                break;
+            }
+            new_vector.push_back(valid_moves[count]);
+            count++;
+            counter++;
         }
-        new_vector.push_back(valid_moves[count]);
+
+        counter = 0;
+        count = Sw + Ne;
+        Nw = std::min(N, W);
+
+        while (counter < Nw)
+        {
+            if (b.get_tool(valid_moves[count]).get_type() != '#')
+            {
+                new_vector.push_back(valid_moves[count]);    //skip
+                break;
+            }
+            new_vector.push_back(valid_moves[count]);
+            count++;
+            counter++;
+        }
+
+        counter = 0;
+        count = Se + Sw + Ne;
+        Sw = std::min(S, E);
+
+        while (counter < Sw)
+        {
+            if (b.get_tool(valid_moves[count]).get_type() != '#')
+            {
+                new_vector.push_back(valid_moves[count]);    //skip
+                break;
+            }
+            new_vector.push_back(valid_moves[count]);
+            count++;
+            counter++;
+        }
     }
 
-    count = pos[1] - 50;  //asci from 1 --> 1(int)
-
-    while (count < 7)
+    if (t.get_type() == 'r' || t.get_type() == 'R' || t.get_type() == 'q' || t.get_type() == 'Q')
     {
-        count++;
-        if (count + 1 > valid_moves.size())
+        queen_counter = count;
+
+        counter = 0;
+        count = queen_counter;
+        while (counter < N)
         {
-            break;
-        }
-        
-        loop_count++;
-        if (count > 0)
-        {
-            if (b.get_tool(valid_moves[count]).get_pos()[0] < b.get_tool(valid_moves[count - 1]).get_pos()[0])
+            if (b.get_tool(valid_moves[count]).get_type() != '#')
             {
-                loop_count--;
+                new_vector.push_back(valid_moves[count]);    //skip
                 break;
             }
+            new_vector.push_back(valid_moves[count]);
+            count++;
+            counter++;
         }
-        if (b.get_tool(valid_moves[count]).get_type() != '#')
-        {
-            new_vector.push_back(valid_moves[count]);    //skip
-            break;
-        }
-        new_vector.push_back(valid_moves[count]);
-    }
 
-    //
-    //
-    //
+        counter = 0;
+        count = N + queen_counter;
 
-    loop_countB = 0;
-    size = new_vector.size();
-    count = loop_count + t.get_pos()[0] - 97;    //asci from a --> 1(int)
-
-    while (count > loop_count)
-    {
-        if (count > valid_moves.size())
+        while (counter < N)
         {
-            break;
-        }
-        count--;
-        if (loop_countB > 0 && count > 0 && count > size)
-        {
-            if (b.get_tool(valid_moves[count]).get_pos()[1] < b.get_tool(valid_moves[count - 1]).get_pos()[1])
+            if (b.get_tool(valid_moves[count]).get_type() != '#')
             {
+                new_vector.push_back(valid_moves[count]);    //skip
                 break;
             }
+            new_vector.push_back(valid_moves[count]);
+            count--;
+            counter++;
         }
 
-        if (b.get_tool(valid_moves[count]).get_type() != '#')
-        {
-            new_vector.push_back(valid_moves[count]);    //skip
-            loop_countB++;
-            break;
-        }
-        new_vector.push_back(valid_moves[count]);
-        loop_countB++;
-    }
+        counter = 0;
+        count = 7 + queen_counter;
 
-    loop_countB = 0;
-    count = loop_count + t.get_pos()[0] - 98;    //asci from a --> 1(int)
-
-    while (count < (loop_count * 2) - 1)
-    {
-        count++;
-        if (count + 1 > valid_moves.size())
+        while (counter < W)
         {
-            break;
-        }
-       
-        if (count > 7 && loop_countB > 0 && count > size)
-        {
-            if (b.get_tool(valid_moves[count]).get_pos()[1] < b.get_tool(valid_moves[count - 1]).get_pos()[1])
+            if (b.get_tool(valid_moves[count]).get_type() != '#')
             {
+                new_vector.push_back(valid_moves[count]);    //skip
                 break;
             }
+            new_vector.push_back(valid_moves[count]);
+            count++;
+            counter++;
         }
 
-        if (b.get_tool(valid_moves[count]).get_type() != '#')
+        counter = 0;
+        count = 7 + W + queen_counter;
+
+        while (counter < W)
         {
-            new_vector.push_back(valid_moves[count]);    //skip
-            loop_countB++;
-            break;
+            if (b.get_tool(valid_moves[count]).get_type() != '#')
+            {
+                new_vector.push_back(valid_moves[count]);    //skip
+                break;
+            }
+            new_vector.push_back(valid_moves[count]);
+            count--;
+            counter++;
         }
-        new_vector.push_back(valid_moves[count]);
-        loop_countB++;
     }
 
     return new_vector;
 }
+
 
 //get enenmy valids moves
 std::vector<std::string> get_enemy_valid_moves(bool turn, Board b)
