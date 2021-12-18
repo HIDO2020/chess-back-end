@@ -90,10 +90,6 @@ void main()
                 new_vector.clear();
                 new_vector = change_vector(vector_valid_moves, b, t);
 
-                for (auto i : new_vector)
-                    std::cout << i << ' ';
-                std::cout << std::endl;
-
                 r.setter_valid_moves(new_vector);
 
                 error = r.move(adress_dst, b.get_tool(adress_dst), turn);
@@ -102,6 +98,10 @@ void main()
                     b.move_piece(adress_dst, t);
 
                     check_vector = get_enemy_valid_moves(turn, b);
+
+                    for (auto i : check_vector)
+                        std::cout << i << ' ';
+                    std::cout << std::endl;
 
                     //checks if the pos of the king is in the valid moves of the enemy
                     if (std::find(check_vector.begin(), check_vector.end(), b.get_king(turn).get_pos()) != check_vector.end())
@@ -123,15 +123,7 @@ void main()
                     //slice
                     r.set_pos(adress_dst);
 
-                    for (std::string i : vector_valid_moves)
-                        std::cout << i << ' ';
-                    std::cout << std::endl;
-
                     vector_valid_moves = change_vector(vector_valid_moves, b, t);
-                    std::cout << std::endl;
-
-                    for (std::string i : vector_valid_moves)
-                        std::cout << i << ' ';
                     std::cout << std::endl;
 
                     g.set_black_check(false);
@@ -163,6 +155,10 @@ void main()
 
                     check_vector = get_enemy_valid_moves(turn, b);
 
+                    for (auto i : check_vector)
+                        std::cout << i << ' ';
+                    std::cout << std::endl;
+
                     //checks if the pos of the king is in the valid moves of the enemy
                     if (std::find(check_vector.begin(), check_vector.end(), adress_dst) != check_vector.end())
                     {
@@ -176,6 +172,7 @@ void main()
                 }
             }
 
+
             else if (t.get_type() == 'b' || t.get_type() == 'B') //bishop
             {
                 Bishop bi(t.get_pos(), t.get_type());
@@ -186,17 +183,8 @@ void main()
                 {
                     vector_valid_moves.resize(14);
                 }
-                
-
-                for (auto i : vector_valid_moves)
-                    std::cout << i << ' ';
-                std::cout << std::endl;
 
                 new_vector = change_vector(vector_valid_moves, b, t);
-
-                for (auto i : new_vector)
-                    std::cout << i << ' ';
-                std::cout << std::endl;
 
                 bi.setter_valid_moves(new_vector);
 
@@ -206,6 +194,10 @@ void main()
                     b.move_piece(adress_dst, t);
 
                     check_vector = get_enemy_valid_moves(turn, b);
+
+                    for (auto i : check_vector)
+                        std::cout << i << ' ';
+                    std::cout << std::endl;
 
                     //checks if the pos of the king is in the valid moves of the enemy
                     if (std::find(check_vector.begin(), check_vector.end(), b.get_king(turn).get_pos()) != check_vector.end())
@@ -266,6 +258,10 @@ void main()
                     b.move_piece(adress_dst, t);
 
                     check_vector = get_enemy_valid_moves(turn, b);
+
+                    for (auto i : check_vector)
+                        std::cout << i << ' ';
+                    std::cout << std::endl;
 
                     //checks if the pos of the king is in the valid moves of the enemy
                     if (std::find(check_vector.begin(), check_vector.end(), b.get_king(turn).get_pos()) != check_vector.end())
@@ -400,9 +396,10 @@ std::vector<std::string> change_vector(std::vector<std::string> valid_moves, Boa
     count = 0, counter = 0;
     Ne = std::min(N, E);
 
+    //bishop and queen
     if (t.get_type() == 'b' || t.get_type() == 'B' || t.get_type() == 'q' || t.get_type() == 'Q')
     {
-
+        //north east
         while (counter < Ne)
         {
             if (b.get_tool(valid_moves[count]).get_type() != '#')
@@ -418,7 +415,8 @@ std::vector<std::string> change_vector(std::vector<std::string> valid_moves, Boa
         counter = 0;
         count = Ne;
         Sw = std::min(S, W);
-
+        
+        //south west
         while (counter < Sw)
         {
             if (b.get_tool(valid_moves[count]).get_type() != '#')
@@ -435,6 +433,7 @@ std::vector<std::string> change_vector(std::vector<std::string> valid_moves, Boa
         count = Sw + Ne;
         Nw = std::min(N, W);
 
+        //north west
         while (counter < Nw)
         {
             if (b.get_tool(valid_moves[count]).get_type() != '#')
@@ -449,9 +448,10 @@ std::vector<std::string> change_vector(std::vector<std::string> valid_moves, Boa
 
         counter = 0;
         count = Se + Sw + Ne;
-        Sw = std::min(S, E);
+        Se = std::min(S, E);
 
-        while (counter < Sw)
+        //south east
+        while (counter < Se)
         {
             if (b.get_tool(valid_moves[count]).get_type() != '#')
             {
@@ -470,6 +470,8 @@ std::vector<std::string> change_vector(std::vector<std::string> valid_moves, Boa
 
         counter = 0;
         count = S + queen_counter;
+
+        //south
         while (counter < S)
         {
             count--;
@@ -486,6 +488,7 @@ std::vector<std::string> change_vector(std::vector<std::string> valid_moves, Boa
         counter = 0;
         count = S + queen_counter;
 
+        //north
         while (counter < N)
         {
             if (b.get_tool(valid_moves[count]).get_type() != '#')
@@ -501,6 +504,7 @@ std::vector<std::string> change_vector(std::vector<std::string> valid_moves, Boa
         counter = 0;
         count = 7 + W + queen_counter;
 
+        //west
         while (counter < W)
         {
             count--;
@@ -516,6 +520,7 @@ std::vector<std::string> change_vector(std::vector<std::string> valid_moves, Boa
         counter = 0;
         count = 7 + W + queen_counter;
 
+        //east
         while (counter < E)
         {
             if (b.get_tool(valid_moves[count]).get_type() != '#')
@@ -561,6 +566,28 @@ std::vector<std::string> get_enemy_valid_moves(bool turn, Board b)
                     new_vector = change_vector(new_vector, b, t);
                     std::copy(new_vector.begin(), new_vector.end(), std::back_inserter(check_vector));
                 }
+
+                else if (t.get_type() == 'B')
+                {
+                    Bishop r_tmp(t.get_pos(), t.get_type());
+                    //slicing
+                    r_tmp.set_valid_moves(r_tmp.get_pos());
+                    new_vector = r_tmp.get_valid_moves();
+                    new_vector.resize(14);
+                    new_vector = change_vector(new_vector, b, t);
+                    std::copy(new_vector.begin(), new_vector.end(), std::back_inserter(check_vector));
+                }
+
+                else if (t.get_type() == 'Q')
+                {
+                    Queen r_tmp(t.get_pos(), t.get_type());
+                    //slicing
+                    r_tmp.set_valid_moves(r_tmp.get_pos());
+                    new_vector = r_tmp.get_valid_moves();
+                    new_vector.resize(28);
+                    new_vector = change_vector(new_vector, b, t);
+                    std::copy(new_vector.begin(), new_vector.end(), std::back_inserter(check_vector));
+                }
             }
             else
             {
@@ -571,6 +598,28 @@ std::vector<std::string> get_enemy_valid_moves(bool turn, Board b)
                     r_tmp.set_valid_moves(r_tmp.get_pos());
                     new_vector = r_tmp.get_valid_moves();
                     new_vector.resize(14);
+                    new_vector = change_vector(new_vector, b, t);
+                    std::copy(new_vector.begin(), new_vector.end(), std::back_inserter(check_vector));
+                }
+
+                else if (t.get_type() == 'b')
+                {
+                    Bishop r_tmp(t.get_pos(), t.get_type());
+                    //slicing
+                    r_tmp.set_valid_moves(r_tmp.get_pos());
+                    new_vector = r_tmp.get_valid_moves();
+                    new_vector.resize(14);
+                    new_vector = change_vector(new_vector, b, t);
+                    std::copy(new_vector.begin(), new_vector.end(), std::back_inserter(check_vector));
+                }
+
+                else if (t.get_type() == 'q')
+                {
+                    Queen r_tmp(t.get_pos(), t.get_type());
+                    //slicing
+                    r_tmp.set_valid_moves(r_tmp.get_pos());
+                    new_vector = r_tmp.get_valid_moves();
+                    new_vector.resize(28);
                     new_vector = change_vector(new_vector, b, t);
                     std::copy(new_vector.begin(), new_vector.end(), std::back_inserter(check_vector));
                 }
