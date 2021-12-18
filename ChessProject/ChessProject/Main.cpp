@@ -21,7 +21,7 @@ void main()
 {
 	int error = 1, countTurns = 0;
 	Board b;
-	Game g("R#BQKB#R#########################################r########bqkb#r0");
+	Game g("R#BQKB#R################################################r#bqkb#r0");
     std::string adress_dst = "ab";
     std::string adress_src = "ab";
     std::string adr = "abcd";
@@ -261,42 +261,42 @@ void main()
                 q.setter_valid_moves(new_vector);
 
                 error = q.move(adress_dst, b.get_tool(adress_dst), turn);
-                //if (error == 0)
-                //{
-                //    b.move_piece(adress_dst, t);
+                if (error == 0)
+                {
+                    b.move_piece(adress_dst, t);
 
-                //    check_vector = get_enemy_valid_moves(turn, b);
+                    check_vector = get_enemy_valid_moves(turn, b);
 
-                //    //checks if the pos of the king is in the valid moves of the enemy
-                //    if (std::find(check_vector.begin(), check_vector.end(), b.get_king(turn).get_pos()) != check_vector.end())
-                //    {
-                //        error = 4;
-                //        //back
-                //        b.move_piece(adress_src, t);
-                //        Tool t = b.get_tool(adress_dst);
-                //        t.set_type('#');
-                //        b.move_piece(adress_dst, t);
-                //    }
+                    //checks if the pos of the king is in the valid moves of the enemy
+                    if (std::find(check_vector.begin(), check_vector.end(), b.get_king(turn).get_pos()) != check_vector.end())
+                    {
+                        error = 4;
+                        //back
+                        b.move_piece(adress_src, t);
+                        Tool t = b.get_tool(adress_dst);
+                        t.set_type('#');
+                        b.move_piece(adress_dst, t);
+                    }
 
 
-                //    q.set_valid_moves(adress_dst);
-                //    vector_valid_moves = q.get_valid_moves();
-                //    vector_valid_moves.resize(14);
+                    q.set_valid_moves(adress_dst);
+                    vector_valid_moves = q.get_valid_moves();
+                    vector_valid_moves.resize(28);
 
-                //    std::cout << std::endl;
-                //    //slice
-                //    q.set_pos(adress_dst);
-                //    vector_valid_moves = change_vector(vector_valid_moves, b, t);
-                //    std::cout << std::endl;
+                    std::cout << std::endl;
+                    //slice
+                    q.set_pos(adress_dst);
+                    vector_valid_moves = change_vector(vector_valid_moves, b, t);
+                    std::cout << std::endl;
 
-                //    g.set_black_check(false);
-                //    g.set_white_check(false);
-                //    vector_valid_moves = vector_valid_moves;
-                //    if (error == 0)
-                //    {
-                //        error = check_check(vector_valid_moves, king_check, b, turn, g);
-                //    }
-                //}
+                    g.set_black_check(false);
+                    g.set_white_check(false);
+                    vector_valid_moves = vector_valid_moves;
+                    if (error == 0)
+                    {
+                        error = check_check(vector_valid_moves, king_check, b, turn, g);
+                    }
+                }
             }
 
 
@@ -469,38 +469,24 @@ std::vector<std::string> change_vector(std::vector<std::string> valid_moves, Boa
         queen_counter = count;
 
         counter = 0;
-        count = queen_counter;
-        while (counter < N)
+        count = S + queen_counter;
+        while (counter < S)
         {
-            if (b.get_tool(valid_moves[count]).get_type() != '#')
-            {
-                new_vector.push_back(valid_moves[count]);    //skip
-                break;
-            }
-            new_vector.push_back(valid_moves[count]);
-            count++;
-            counter++;
-        }
-
-        counter = 0;
-        count = N + queen_counter;
-
-        while (counter < N)
-        {
-            if (b.get_tool(valid_moves[count]).get_type() != '#')
-            {
-                new_vector.push_back(valid_moves[count]);    //skip
-                break;
-            }
-            new_vector.push_back(valid_moves[count]);
             count--;
+            if (b.get_tool(valid_moves[count]).get_type() != '#')
+            {
+                new_vector.push_back(valid_moves[count]);    //skip
+                break;
+            }
+            new_vector.push_back(valid_moves[count]);
+            
             counter++;
         }
 
         counter = 0;
-        count = 7 + queen_counter;
+        count = S + queen_counter;
 
-        while (counter < W)
+        while (counter < N)
         {
             if (b.get_tool(valid_moves[count]).get_type() != '#')
             {
@@ -517,13 +503,28 @@ std::vector<std::string> change_vector(std::vector<std::string> valid_moves, Boa
 
         while (counter < W)
         {
+            count--;
             if (b.get_tool(valid_moves[count]).get_type() != '#')
             {
                 new_vector.push_back(valid_moves[count]);    //skip
                 break;
             }
             new_vector.push_back(valid_moves[count]);
-            count--;
+            
+            counter++;
+        }
+        counter = 0;
+        count = 7 + W + queen_counter;
+
+        while (counter < E)
+        {
+            if (b.get_tool(valid_moves[count]).get_type() != '#')
+            {
+                new_vector.push_back(valid_moves[count]);    //skip
+                break;
+            }
+            new_vector.push_back(valid_moves[count]);
+            count++;
             counter++;
         }
     }
