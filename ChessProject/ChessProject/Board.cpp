@@ -31,6 +31,10 @@ Board::Board(std::string _board)
 			{
 				this->_board[i][j] = Bishop(pos, _board[count]);
 			}
+			else if (_board[count] == 'n' || _board[count] == 'N')
+			{
+				this->_board[i][j] = Knight(pos, _board[count]);
+			}
 			else
 			{
 				this->_board[i][j] = Empty(pos, _board[count]);

@@ -5,6 +5,7 @@
 #include "Board.h"
 #include "Bishop.h"
 #include "Queen.h"
+#include "Knight.h"
 #include "Tool.h"
 #include <vector>
 
@@ -22,7 +23,7 @@ void main()
 {
     int error = 1, countTurns = 0;
     Board b;
-    Game g("R#BQKB#R################################################r#bqkb#r0");
+    Game g("RNBQKBNR################################################rnbqkbnr0");
     std::string adress_dst = "ab";
     std::string adress_src = "ab";
     std::string adr = "abcd";
@@ -262,6 +263,52 @@ void main()
                     if (error == 0)
                     {
                         error = check_check(new_vector, king_check, b, turn, g);
+                    }
+                }
+            }
+
+            else if (t.get_type() == 'n' || t.get_type() == 'N') //knight
+            {
+                Knight kn(t.get_pos(), t.get_type());
+                //slicing
+                vector_valid_moves.clear();
+                kn.set_valid_moves(kn.get_pos());
+                vector_valid_moves = kn.get_valid_moves();
+                vector_valid_moves.resize(8);
+                new_vector = vector_valid_moves;
+                kn.setter_valid_moves(new_vector);
+
+                error = kn.move(adress_dst, b.get_tool(adress_dst), turn);
+                if (error == 0)
+                {
+                    b.move_piece(adress_dst, t);
+
+                    check_vector = get_enemy_valid_moves(turn, b);
+
+                    //checks if the pos of the king is in the valid moves of the enemy
+                    if (std::find(check_vector.begin(), check_vector.end(), b.get_king(turn).get_pos()) != check_vector.end())
+                    {
+                        error = 4;
+                        //back
+                        b.move_piece(adress_src, t);
+                        Tool t = b.get_tool(adress_dst);
+                        t.set_type('#');
+                        b.move_piece(adress_dst, t);
+                    }
+
+
+                    kn.set_valid_moves(adress_dst);
+                    vector_valid_moves = kn.get_valid_moves();
+                    vector_valid_moves.resize(8);
+
+                    //slice
+                    kn.set_pos(adress_dst);
+
+                    g.set_black_check(false);
+                    g.set_white_check(false);
+                    if (error == 0)
+                    {
+                        error = check_check(vector_valid_moves, king_check, b, turn, g);
                     }
                 }
             }
