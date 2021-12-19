@@ -1,4 +1,5 @@
 #include <iostream>
+#include <algorithm>
 #include <string>
 #include "Game.h"
 #include "Board.h"
@@ -12,16 +13,16 @@
 //full game
 //"RNBQKBNRPPPPPPPP################################pppppppprnbqkbnr0"
 
-void error_switch(int e, Board &b, Tool &t, std::string adr, Game g);
+void error_switch(int e, Board& b, Tool& t, std::string adr, Game g);
 std::vector<std::string> change_vector(std::vector<std::string> rook_valid_moves, Board b, Tool t);
 std::vector<std::string> get_enemy_valid_moves(bool turn, Board b);
 int check_check(std::vector<std::string> valid_moves, char king_check, Board b, bool turn, Game& g);
 
 void main()
 {
-	int error = 1, countTurns = 0;
-	Board b;
-	Game g("R#BQKB#R################################################r#bqkb#r0");
+    int error = 1, countTurns = 0;
+    Board b;
+    Game g("R#BQKB#R################################################r#bqkb#r0");
     std::string adress_dst = "ab";
     std::string adress_src = "ab";
     std::string adr = "abcd";
@@ -40,11 +41,14 @@ void main()
     int i = 0, j = 0;
 
     b = g.get_board();
-    b.print_board();  
+    b.print_board();
 
     while (adr != "exit" && adr != "Exit")
     {
         error = 0;
+        check_vector.clear();
+        new_vector.clear();
+        vector_valid_moves.clear();
 
         if (turn)
         {
@@ -54,7 +58,7 @@ void main()
         {
             std::cout << "Black turn.." << std::endl;
         }
-        
+
         std::cout << "Enter cordination or enter exit to end the program: ";
         std::cin >> adr;
         std::cout << std::endl;
@@ -69,7 +73,7 @@ void main()
         // error 5 (first cause he checks for existence of the tool index)
         if (adress_dst[0] < 97 || adress_dst[0] > 104 || adress_dst[1] < 49 || adress_dst[1] > 56)
         {
-            error =  invalid_index;
+            error = invalid_index;
         }
 
         if (error == 0)
@@ -111,12 +115,10 @@ void main()
                     vector_valid_moves = r.get_valid_moves();
                     vector_valid_moves.resize(14);
 
-                    std::cout << std::endl;
                     //slice
                     r.set_pos(adress_dst);
 
                     vector_valid_moves = change_vector(vector_valid_moves, b, t);
-                    std::cout << std::endl;
 
                     g.set_black_check(false);
                     g.set_white_check(false);
@@ -125,7 +127,7 @@ void main()
                         error = check_check(vector_valid_moves, king_check, b, turn, g);
                     }
                 }
-                
+
             }
 
 
@@ -194,16 +196,13 @@ void main()
                         b.move_piece(adress_dst, t);
                     }
 
-
                     bi.set_valid_moves(adress_dst);
                     vector_valid_moves = bi.get_valid_moves();
                     vector_valid_moves.resize(14);
 
-                    std::cout << std::endl;
                     //slice
                     bi.set_pos(adress_dst);
                     vector_valid_moves = change_vector(vector_valid_moves, b, t);
-                    std::cout << std::endl;
 
                     g.set_black_check(false);
                     g.set_white_check(false);
@@ -226,7 +225,6 @@ void main()
 
                 new_vector = change_vector(vector_valid_moves, b, t);
 
-
                 q.setter_valid_moves(new_vector);
 
                 error = q.move(adress_dst, b.get_tool(adress_dst), turn);
@@ -247,27 +245,26 @@ void main()
                         b.move_piece(adress_dst, t);
                     }
 
-
                     q.set_valid_moves(adress_dst);
                     vector_valid_moves = q.get_valid_moves();
                     vector_valid_moves.resize(28);
 
                     std::cout << std::endl;
                     //slice
-                    q.set_pos(adress_dst);
-                    vector_valid_moves = change_vector(vector_valid_moves, b, t);
-                    std::cout << std::endl;
+
+                    //b.move_piece(adress_dst, t);
+                    t.set_pos(adress_dst);
+
+                    new_vector = change_vector(vector_valid_moves, b, t);
 
                     g.set_black_check(false);
                     g.set_white_check(false);
-                    vector_valid_moves = vector_valid_moves;
                     if (error == 0)
                     {
-                        error = check_check(vector_valid_moves, king_check, b, turn, g);
+                        error = check_check(new_vector, king_check, b, turn, g);
                     }
                 }
             }
-
 
             else
             {
@@ -282,7 +279,7 @@ void main()
         }
         else
         {
-            for (auto i : vector_valid_moves)
+            for (auto i : new_vector)
                 std::cout << i << ' ';
             std::cout << std::endl;
         }
@@ -299,12 +296,12 @@ void main()
     }
 }
 
-void error_switch(int e, Board &b, Tool &t, std::string adr, Game g)
+void error_switch(int e, Board& b, Tool& t, std::string adr, Game g)
 {
     switch (e)
     {
     case valid_move:
-        
+
         b.move_piece(adr, t);
         t.set_pos(adr);
         b.print_board();
@@ -374,6 +371,9 @@ std::vector<std::string> change_vector(std::vector<std::string> valid_moves, Boa
 
     count = 0, counter = 0;
     Ne = std::min(N, E);
+    Sw = std::min(S, W);
+    Se = std::min(S, E);
+    Nw = std::min(N, W);
 
     //bishop and queen
     if (t.get_type() == 'b' || t.get_type() == 'B' || t.get_type() == 'q' || t.get_type() == 'Q')
@@ -381,6 +381,7 @@ std::vector<std::string> change_vector(std::vector<std::string> valid_moves, Boa
         //north east
         while (counter < Ne)
         {
+            queen_counter++;
             if (b.get_tool(valid_moves[count]).get_type() != '#')
             {
                 new_vector.push_back(valid_moves[count]);    //skip
@@ -393,11 +394,11 @@ std::vector<std::string> change_vector(std::vector<std::string> valid_moves, Boa
 
         counter = 0;
         count = Ne;
-        Sw = std::min(S, W);
-        
+
         //south west
         while (counter < Sw)
         {
+            queen_counter++;
             if (b.get_tool(valid_moves[count]).get_type() != '#')
             {
                 new_vector.push_back(valid_moves[count]);    //skip
@@ -410,11 +411,11 @@ std::vector<std::string> change_vector(std::vector<std::string> valid_moves, Boa
 
         counter = 0;
         count = Sw + Ne;
-        Nw = std::min(N, W);
 
         //north west
         while (counter < Nw)
         {
+            queen_counter++;
             if (b.get_tool(valid_moves[count]).get_type() != '#')
             {
                 new_vector.push_back(valid_moves[count]);    //skip
@@ -426,12 +427,13 @@ std::vector<std::string> change_vector(std::vector<std::string> valid_moves, Boa
         }
 
         counter = 0;
-        count = Se + Sw + Ne;
-        Se = std::min(S, E);
+        count = Sw + Ne;
+
 
         //south east
         while (counter < Se)
         {
+            queen_counter++;
             if (b.get_tool(valid_moves[count]).get_type() != '#')
             {
                 new_vector.push_back(valid_moves[count]);    //skip
@@ -445,8 +447,7 @@ std::vector<std::string> change_vector(std::vector<std::string> valid_moves, Boa
 
     if (t.get_type() == 'r' || t.get_type() == 'R' || t.get_type() == 'q' || t.get_type() == 'Q')
     {
-        queen_counter = count;
-
+        //queen_counter++;
         counter = 0;
         count = S + queen_counter;
 
@@ -460,7 +461,7 @@ std::vector<std::string> change_vector(std::vector<std::string> valid_moves, Boa
                 break;
             }
             new_vector.push_back(valid_moves[count]);
-            
+
             counter++;
         }
 
@@ -493,7 +494,7 @@ std::vector<std::string> change_vector(std::vector<std::string> valid_moves, Boa
                 break;
             }
             new_vector.push_back(valid_moves[count]);
-            
+
             counter++;
         }
         counter = 0;
@@ -576,11 +577,6 @@ std::vector<std::string> get_enemy_valid_moves(bool turn, Board b)
                     new_vector = r_tmp.get_valid_moves();
                     new_vector.resize(8);
                     new_vector = change_vector(new_vector, b, t);
-
-                    for (auto i : new_vector)
-                        std::cout << i << 'z';
-                    std::cout << std::endl;
-
                     std::copy(new_vector.begin(), new_vector.end(), std::back_inserter(check_vector));
                 }
             }
@@ -594,8 +590,6 @@ std::vector<std::string> get_enemy_valid_moves(bool turn, Board b)
                     new_vector = r_tmp.get_valid_moves();
                     new_vector.resize(14);
                     new_vector = change_vector(new_vector, b, t);
-
-
                     std::copy(new_vector.begin(), new_vector.end(), std::back_inserter(check_vector));
                 }
 
@@ -637,7 +631,7 @@ std::vector<std::string> get_enemy_valid_moves(bool turn, Board b)
     return check_vector;
 }
 
-int check_check(std::vector<std::string> valid_moves, char king_check, Board b, bool turn, Game &g)
+int check_check(std::vector<std::string> valid_moves, char king_check, Board b, bool turn, Game& g)
 {
     int error = 0;
 
