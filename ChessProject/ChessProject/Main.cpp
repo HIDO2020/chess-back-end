@@ -164,6 +164,9 @@ void main()
                 vector_valid_moves.resize(14);
 
                 new_vector.clear();
+
+
+
                 new_vector = change_vector(vector_valid_moves, b, t);
 
                 r.setter_valid_moves(new_vector);
@@ -431,9 +434,9 @@ void main()
         }
         else
         {
-            /*for (auto i : new_vector)
+            for (auto i : new_vector)
                 std::cout << i << ' ';
-            std::cout << std::endl;*/
+            std::cout << std::endl;
         }
         if (g.get_turn() % 2 == 0)
         {
@@ -463,59 +466,6 @@ void main()
     }
     p.close();
 }
-
-//void error_switch(int e, Board& b, Tool& t, std::string adr, Game g)
-//{
-//    switch (e)
-//    {
-//    case valid_move:
-//
-//        b.move_piece(adr, t);
-//        t.set_pos(adr);
-//        b.print_board();
-//        break;
-//    case valid_check:
-//        b.move_piece(adr, t);
-//        t.set_pos(adr);
-//        b.print_board();
-//        std::cout << "Check!" << std::endl;
-//        break;
-//    case no_src:
-//        std::cout << "Error: the position you chose is not your piece" << std::endl;
-//        break;
-//    case invalid_dst:
-//        std::cout << "Error: You can't eat yourself ;)" << std::endl;
-//        break;
-//    case self_check:
-//        std::cout << "Error: The move you just did cause self check" << std::endl;
-//        break;
-//    case invalid_index:
-//        std::cout << "Error: The index you chose is out of board range (8-8)" << std::endl;
-//        break;
-//    case invalid_move:
-//        std::cout << "Error: Invalid move of that tool " << std::endl;
-//        break;
-//    case same_src_dst:
-//        std::cout << "Error: You can't move to the current spot" << std::endl;
-//        break;
-//    case mate:
-//        b.move_piece(adr, t);
-//        t.set_pos(adr);
-//        b.print_board();
-//        std::cout << "CheckMate!" << std::endl;
-//        if (g.get_turn() == true)
-//        {
-//            std::cout << "White Won!" << std::endl;
-//        }
-//        else
-//        {
-//            std::cout << "Black Won!" << std::endl;
-//        }
-//        break;
-//    default:
-//        break;
-//    }
-//}
 
 /*
 slicing the vector of the pawn only 
@@ -641,7 +591,6 @@ std::vector<std::string> change_vector(std::vector<std::string> valid_moves, Boa
         //north east
         while (counter < Ne)
         {
-            queen_counter++;
             if (b.get_tool(valid_moves[count]).get_type() != '#')
             {
                 new_vector.push_back(valid_moves[count]);    //skip
@@ -658,7 +607,6 @@ std::vector<std::string> change_vector(std::vector<std::string> valid_moves, Boa
         //south west
         while (counter < Sw)
         {
-            queen_counter++;
             if (b.get_tool(valid_moves[count]).get_type() != '#')
             {
                 new_vector.push_back(valid_moves[count]);    //skip
@@ -675,7 +623,6 @@ std::vector<std::string> change_vector(std::vector<std::string> valid_moves, Boa
         //north west
         while (counter < Nw)
         {
-            queen_counter++;
             if (b.get_tool(valid_moves[count]).get_type() != '#')
             {
                 new_vector.push_back(valid_moves[count]);    //skip
@@ -687,13 +634,12 @@ std::vector<std::string> change_vector(std::vector<std::string> valid_moves, Boa
         }
 
         counter = 0;
-        count = Sw + Ne;
+        count = Sw + Ne + Nw;
 
 
         //south east
         while (counter < Se)
         {
-            queen_counter++;
             if (b.get_tool(valid_moves[count]).get_type() != '#')
             {
                 new_vector.push_back(valid_moves[count]);    //skip
@@ -707,7 +653,10 @@ std::vector<std::string> change_vector(std::vector<std::string> valid_moves, Boa
 
     if (t.get_type() == 'r' || t.get_type() == 'R' || t.get_type() == 'q' || t.get_type() == 'Q')
     {
-        //queen_counter++;
+        if (t.get_type() == 'q' || t.get_type() == 'Q')
+        {
+            queen_counter = Ne + Sw + Se + Nw;
+        }
         counter = 0;
         count = S + queen_counter;
 
