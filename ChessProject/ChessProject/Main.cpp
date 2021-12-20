@@ -23,7 +23,7 @@ void main()
 {
     int error = 1, countTurns = 0;
     Board b;
-    Game g("RNBQKBNR################################################rnbqkbnr0");
+    Game g("RNBQKBNR#######n########################################r#bqkbnr0");
     std::string adress_dst = "ab";
     std::string adress_src = "ab";
     std::string adr = "abcd";
@@ -201,6 +201,10 @@ void main()
                     vector_valid_moves = bi.get_valid_moves();
                     vector_valid_moves.resize(14);
 
+                    for (auto i : vector_valid_moves)
+                        std::cout << i << ' ';
+                    std::cout << std::endl;
+
                     //slice
                     bi.set_pos(adress_dst);
                     vector_valid_moves = change_vector(vector_valid_moves, b, t);
@@ -296,10 +300,14 @@ void main()
                         b.move_piece(adress_dst, t);
                     }
 
-
+                    //????
                     kn.set_valid_moves(adress_dst);
                     vector_valid_moves = kn.get_valid_moves();
                     vector_valid_moves.resize(8);
+
+                    for (auto i : vector_valid_moves)
+                        std::cout << i << ' ';
+                    std::cout << std::endl;
 
                     //slice
                     kn.set_pos(adress_dst);
@@ -616,6 +624,16 @@ std::vector<std::string> get_enemy_valid_moves(bool turn, Board b)
                     std::copy(new_vector.begin(), new_vector.end(), std::back_inserter(check_vector));
                 }
 
+                else if (t.get_type() == 'N')
+                {
+                    Knight r_tmp(t.get_pos(), t.get_type());
+                    //slicing
+                    r_tmp.set_valid_moves(r_tmp.get_pos());
+                    new_vector = r_tmp.get_valid_moves();
+                    new_vector.resize(8);
+                    std::copy(new_vector.begin(), new_vector.end(), std::back_inserter(check_vector));
+                }
+
                 else if (t.get_type() == 'K')
                 {
                     King r_tmp(t.get_pos(), t.get_type());
@@ -659,6 +677,16 @@ std::vector<std::string> get_enemy_valid_moves(bool turn, Board b)
                     new_vector = r_tmp.get_valid_moves();
                     new_vector.resize(28);
                     new_vector = change_vector(new_vector, b, t);
+                    std::copy(new_vector.begin(), new_vector.end(), std::back_inserter(check_vector));
+                }
+
+                else if (t.get_type() == 'n')
+                {
+                    Knight r_tmp(t.get_pos(), t.get_type());
+                    //slicing
+                    r_tmp.set_valid_moves(r_tmp.get_pos());
+                    new_vector = r_tmp.get_valid_moves();
+                    new_vector.resize(28);
                     std::copy(new_vector.begin(), new_vector.end(), std::back_inserter(check_vector));
                 }
 

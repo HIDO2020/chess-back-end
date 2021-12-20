@@ -3,6 +3,7 @@
 Knight::Knight(std::string pos, char type) : Tool(pos, type)
 {
 	set_valid_moves(pos);
+	this->valid_moves.resize(8);
 }
 
 int Knight::move(std::string _dst, Tool t, bool turn)
@@ -27,6 +28,7 @@ int Knight::move(std::string _dst, Tool t, bool turn)
 
 void Knight::set_valid_moves(std::string pos)
 {
+	this->valid_moves.clear();
 	std::string tmp = "ab";
 	int x[8] = { 2, 1, -1, -2, -2, -1, 1, 2 };
 	int y[8] = { 1, 2, 2, 1, -1, -2, -2, -1 };
