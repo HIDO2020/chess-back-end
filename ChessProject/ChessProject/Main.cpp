@@ -331,15 +331,7 @@ void main()
                 vector_valid_moves.resize(6);
                 p.setter_valid_moves(vector_valid_moves);
 
-                for (auto i : vector_valid_moves)
-                    std::cout << i << ' ';
-                std::cout << std::endl;
-
                 new_vector = change_pawn_vector(p, b);
-
-                for (auto i : new_vector)
-                    std::cout << i << ' ';
-                std::cout << std::endl;
 
                 p.setter_valid_moves(new_vector);
 
@@ -376,6 +368,11 @@ void main()
                         error = check_check(vector_valid_moves, king_check, b, turn, g);
                     }
                 }
+            }
+
+            else //#
+            {
+                error = no_src;
             }
 
         }
@@ -435,7 +432,7 @@ void error_switch(int e, Board& b, Tool& t, std::string adr, Game g)
         std::cout << "Error: Invalid move of that tool " << std::endl;
         break;
     case same_src_dst:
-        std::cout << "Error: You can't move to yout current spot" << std::endl;
+        std::cout << "Error: You can't move to the current spot" << std::endl;
         break;
     case mate:
         b.move_piece(adr, t);
@@ -462,24 +459,79 @@ slicing the vector of the pawn only
 std::vector<std::string> change_pawn_vector(Pawn p, Board b)
 {
     std::vector<std::string> moves = p.get_valid_moves();
+    std::string tmp = "ab";
     moves.resize(4);
-    if (!(b.get_tool(moves[2]).get_color() != p.get_color() && b.get_tool(moves[2]).get_type() != '#') || p.get_pos()[1] == ASCII_8)
+    if (p.get_pos() == "h4")
     {
-        moves[2].erase();
+        tmp = "sd";
     }
-    if (p.get_pos()[1] == ASCII_8 || b.get_tool(moves[1]).get_type() != '#')
+    for (int i = 0; i < 4; i++)
     {
-        moves[1].erase();
-        moves[3].erase();
+        if (moves[i] != "")
+        {
+            if (p.get_color())
+            {
+                if ((moves[i][0] > p.get_pos()[0] || moves[i][0] < p.get_pos()[0]) &&
+                    (b.get_tool(moves[i]).get_color() == p.get_color() || b.get_tool(moves[i]).get_type() == '#'))
+                {
+                    moves[i].erase();
+                    continue;
+                }
+
+                if (moves[i][1] - 1 == p.get_pos()[1] && moves[i][0] == p.get_pos()[0] && b.get_tool(moves[i]).get_type() != '#')
+                {
+                    tmp[0] = moves[i][0];
+                    tmp[1] = moves[i][1] + 1;
+                    //if (std::find(moves.begin(), moves.end(), tmp) != moves.end())
+                    //{
+                    for (int j = 0; j < 4; j++)
+                    {
+                        if (moves[j] == tmp)
+                            moves[j].erase();
+                    }
+                    //}
+                    moves[i].erase();
+                    //moves[i + 1].erase();
+                    continue;
+                }
+                if (moves[i][1] - 2 == p.get_pos()[1] && moves[i][0] == p.get_pos()[0] && b.get_tool(moves[i]).get_type() != '#')
+                {
+                    moves[i].erase();
+                }
+            }
+            else
+            {
+                if ((moves[i][0] > p.get_pos()[0] || moves[i][0] < p.get_pos()[0]) &&
+                    (b.get_tool(moves[i]).get_color() == p.get_color() || b.get_tool(moves[i]).get_type() == '#'))
+                {
+                    moves[i].erase();
+                    continue;
+                }
+
+                if (moves[i][1] + 1 == p.get_pos()[1] && moves[i][0] == p.get_pos()[0] && b.get_tool(moves[i]).get_type() != '#')
+                {
+                    tmp[0] = moves[i][0];
+                    tmp[1] = moves[i][1] - 1;
+                    //if (std::find(moves.begin(), moves.end(), tmp) != moves.end())
+                    //{
+                    for (int j = 0; j < 4; j++)
+                    {
+                        if (moves[j] == tmp)
+                            moves[j].erase();
+                    }
+                    //}
+                    moves[i].erase();
+                    //moves[i + 1].erase();
+                    continue;
+                }
+                if (moves[i][1] + 2 == p.get_pos()[1] && moves[i][0] == p.get_pos()[0] && b.get_tool(moves[i]).get_type() != '#')
+                {
+                    moves[i].erase();
+                }
+            }
+        }
     }
-    if (p.get_pos()[1] == ASCII_7 || b.get_tool(moves[3]).get_type() != '#')
-    {
-        moves[3].erase();
-    }
-    if (!(b.get_tool(moves[0]).get_color() != p.get_color() && b.get_tool(moves[0]).get_type() != '#') || p.get_pos()[1] == ASCII_8)
-    {
-        moves[0].erase();
-    }
+
 
     std::vector<std::string> fin_moves;
     for (int i = 0; i < moves.size(); i++)
@@ -733,6 +785,17 @@ std::vector<std::string> get_enemy_valid_moves(bool turn, Board b)
                     new_vector = change_vector(new_vector, b, t);
                     std::copy(new_vector.begin(), new_vector.end(), std::back_inserter(check_vector));
                 }
+
+                else if (t.get_type() == 'P')
+                {
+                    Pawn r_tmp(t.get_pos(), t.get_type());
+                    //slicing
+                    r_tmp.set_valid_moves(r_tmp.get_pos());
+                    new_vector = r_tmp.get_valid_moves();
+                    new_vector.resize(6);
+                    new_vector = change_vector(new_vector, b, t);
+                    std::copy(new_vector.begin(), new_vector.end(), std::back_inserter(check_vector));
+                }
             }
             else
             {
@@ -786,6 +849,17 @@ std::vector<std::string> get_enemy_valid_moves(bool turn, Board b)
                     r_tmp.set_valid_moves(r_tmp.get_pos());
                     new_vector = r_tmp.get_valid_moves();
                     new_vector.resize(8);
+                    new_vector = change_vector(new_vector, b, t);
+                    std::copy(new_vector.begin(), new_vector.end(), std::back_inserter(check_vector));
+                }
+
+                else if (t.get_type() == 'p')
+                {
+                    Pawn r_tmp(t.get_pos(), t.get_type());
+                    //slicing
+                    r_tmp.set_valid_moves(r_tmp.get_pos());
+                    new_vector = r_tmp.get_valid_moves();
+                    new_vector.resize(6);
                     new_vector = change_vector(new_vector, b, t);
                     std::copy(new_vector.begin(), new_vector.end(), std::back_inserter(check_vector));
                 }

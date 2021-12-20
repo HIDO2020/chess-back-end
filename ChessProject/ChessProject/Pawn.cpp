@@ -36,11 +36,21 @@ void Pawn::set_valid_moves(std::string pos)
     std::string tmp = "ab";
     if (this->_color) //if white
     {
+        if (pos[1] == '2')
+            this->first_move = true;
+        else
+            this->first_move = false;
+
+
         if (pos[0] + 1 <= ASCII_h && pos[1] + 1 <= ASCII_8)
         {
             tmp[0] = pos[0] + 1;
             tmp[1] = pos[1] + 1;
             this->valid_moves.push_back(tmp);
+        }
+
+        if (pos[1] + 1 <= ASCII_8)
+        {
             tmp = pos;
             tmp[1]++;
             this->valid_moves.push_back(tmp);
@@ -62,11 +72,21 @@ void Pawn::set_valid_moves(std::string pos)
     }
     else //if black
     {
+        if (pos[1] == '7')
+            this->first_move = true;
+        else
+            this->first_move = false;
+
+
         if (pos[0] + 1 <= ASCII_h && pos[1] - 1 >= ASCII_1)
         {
             tmp[0] = pos[0] + 1;
             tmp[1] = pos[1] - 1;
             this->valid_moves.push_back(tmp);
+        }
+
+        if (pos[1] - 1 >= ASCII_1)
+        {
             tmp = pos;
             tmp[1]--;
             this->valid_moves.push_back(tmp);
