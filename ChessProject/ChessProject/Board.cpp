@@ -35,6 +35,10 @@ Board::Board(std::string _board)
 			{
 				this->_board[i][j] = Knight(pos, _board[count]);
 			}
+			else if (_board[count] == 'p' || _board[count] == 'P')
+			{
+				this->_board[i][j] = Pawn(pos, _board[count]);
+			}
 			else
 			{
 				this->_board[i][j] = Empty(pos, _board[count]);

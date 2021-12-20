@@ -7,6 +7,7 @@
 #include "Queen.h"
 #include "Knight.h"
 #include "Tool.h"
+#include "Pawn.h"
 #include <vector>
 
 #define POSSIBLE_MOVES 14
@@ -15,6 +16,7 @@
 //"RNBQKBNRPPPPPPPP################################pppppppprnbqkbnr0"
 
 void error_switch(int e, Board& b, Tool& t, std::string adr, Game g);
+std::vector<std::string> change_pawn_vector(Pawn p, Board b);
 std::vector<std::string> change_vector(std::vector<std::string> rook_valid_moves, Board b, Tool t);
 std::vector<std::string> get_enemy_valid_moves(bool turn, Board b);
 int check_check(std::vector<std::string> valid_moves, char king_check, Board b, bool turn, Game& g);
@@ -23,7 +25,7 @@ void main()
 {
     int error = 1, countTurns = 0;
     Board b;
-    Game g("RNBQKBNR#######n########################################r#bqkbnr0");
+    Game g("RNBQKBNRPPPPPPPP################################pppppppprnbqkbnr0");
     std::string adress_dst = "ab";
     std::string adress_src = "ab";
     std::string adr = "abcd";
@@ -79,7 +81,40 @@ void main()
 
         if (error == 0)
         {
-            if (t.get_type() == 'r' || t.get_type() == 'R') //rook
+
+            if (t.get_type() == 'k' || t.get_type() == 'K') //king
+            {
+                King k(t.get_pos(), t.get_type());
+                k.set_valid_moves(k.get_pos());
+                king_valid_moves = k.get_valid_moves();
+                king_valid_moves.resize(9);
+
+                k.setter_valid_moves(king_valid_moves);
+
+                error = k.move(adress_dst, b.get_tool(adress_dst), turn);
+
+                if (error == 0)
+                {
+                    b.move_piece(adress_dst, t);
+                    k.set_pos(adress_dst);
+
+                    check_vector = get_enemy_valid_moves(turn, b);
+
+                    //checks if the pos of the king is in the valid moves of the enemy
+                    if (std::find(check_vector.begin(), check_vector.end(), adress_dst) != check_vector.end())
+                    {
+                        error = 4;
+                        //back
+                        b.move_piece(adress_src, t);
+                        Tool t = b.get_tool(adress_dst);
+                        t.set_type('#');
+                        b.move_piece(adress_dst, t);
+                    }
+                }
+            }
+
+
+            else if (t.get_type() == 'r' || t.get_type() == 'R') //rook
             {
                 Rook r(t.get_pos(), t.get_type());
                 //slicing
@@ -129,38 +164,6 @@ void main()
                     }
                 }
 
-            }
-
-
-            else if (t.get_type() == 'k' || t.get_type() == 'K') //king
-            {
-                King k(t.get_pos(), t.get_type());
-                k.set_valid_moves(k.get_pos());
-                king_valid_moves = k.get_valid_moves();
-                king_valid_moves.resize(9);
-
-                k.setter_valid_moves(king_valid_moves);
-
-                error = k.move(adress_dst, b.get_tool(adress_dst), turn);
-
-                if (error == 0)
-                {
-                    b.move_piece(adress_dst, t);
-                    k.set_pos(adress_dst);
-
-                    check_vector = get_enemy_valid_moves(turn, b);
-
-                    //checks if the pos of the king is in the valid moves of the enemy
-                    if (std::find(check_vector.begin(), check_vector.end(), adress_dst) != check_vector.end())
-                    {
-                        error = 4;
-                        //back
-                        b.move_piece(adress_src, t);
-                        Tool t = b.get_tool(adress_dst);
-                        t.set_type('#');
-                        b.move_piece(adress_dst, t);
-                    }
-                }
             }
 
 
@@ -271,6 +274,7 @@ void main()
                 }
             }
 
+
             else if (t.get_type() == 'n' || t.get_type() == 'N') //knight
             {
                 Knight kn(t.get_pos(), t.get_type());
@@ -300,14 +304,9 @@ void main()
                         b.move_piece(adress_dst, t);
                     }
 
-                    //????
                     kn.set_valid_moves(adress_dst);
                     vector_valid_moves = kn.get_valid_moves();
                     vector_valid_moves.resize(8);
-
-                    for (auto i : vector_valid_moves)
-                        std::cout << i << ' ';
-                    std::cout << std::endl;
 
                     //slice
                     kn.set_pos(adress_dst);
@@ -321,12 +320,65 @@ void main()
                 }
             }
 
-            else
-            {
-                error = t.move_errors(adress_dst, b.get_tool(adress_dst), turn);
-            }
-        }
 
+            else if (t.get_type() == 'p' || t.get_type() == 'P') //Pawn
+            {
+                Pawn p(t.get_pos(), t.get_type());
+                //slicing
+                vector_valid_moves.clear();
+                p.set_valid_moves(p.get_pos());
+                vector_valid_moves = p.get_valid_moves();
+                vector_valid_moves.resize(6);
+                p.setter_valid_moves(vector_valid_moves);
+
+                for (auto i : vector_valid_moves)
+                    std::cout << i << ' ';
+                std::cout << std::endl;
+
+                new_vector = change_pawn_vector(p, b);
+
+                for (auto i : new_vector)
+                    std::cout << i << ' ';
+                std::cout << std::endl;
+
+                p.setter_valid_moves(new_vector);
+
+                error = p.move(adress_dst, b.get_tool(adress_dst), turn);
+                if (error == 0)
+                {
+                    b.move_piece(adress_dst, t);
+
+                    check_vector = get_enemy_valid_moves(turn, b);
+
+                    //checks if the pos of the king is in the valid moves of the enemy
+                    if (std::find(check_vector.begin(), check_vector.end(), b.get_king(turn).get_pos()) != check_vector.end())
+                    {
+                        error = 4;
+                        //back
+                        b.move_piece(adress_src, t);
+                        Tool t = b.get_tool(adress_dst);
+                        t.set_type('#');
+                        b.move_piece(adress_dst, t);
+                    }
+
+                    p.set_valid_moves(adress_dst);
+                    vector_valid_moves = p.get_valid_moves();
+                    vector_valid_moves.resize(8);
+
+                    //slice
+                    p.set_pos(adress_dst);
+                    new_vector = change_pawn_vector(p, b);
+
+                    g.set_black_check(false);
+                    g.set_white_check(false);
+                    if (error == 0)
+                    {
+                        error = check_check(vector_valid_moves, king_check, b, turn, g);
+                    }
+                }
+            }
+
+        }
         error_switch(error, b, t, adress_dst, g);
         if (error == 0 || error == 1 || error == 8)
         {
@@ -402,6 +454,43 @@ void error_switch(int e, Board& b, Tool& t, std::string adr, Game g)
     default:
         break;
     }
+}
+
+/*
+slicing the vector of the pawn only 
+*/
+std::vector<std::string> change_pawn_vector(Pawn p, Board b)
+{
+    std::vector<std::string> moves = p.get_valid_moves();
+    moves.resize(4);
+    if (!(b.get_tool(moves[2]).get_color() != p.get_color() && b.get_tool(moves[2]).get_type() != '#') || p.get_pos()[1] == ASCII_8)
+    {
+        moves[2].erase();
+    }
+    if (p.get_pos()[1] == ASCII_8 || b.get_tool(moves[1]).get_type() != '#')
+    {
+        moves[1].erase();
+        moves[3].erase();
+    }
+    if (p.get_pos()[1] == ASCII_7 || b.get_tool(moves[3]).get_type() != '#')
+    {
+        moves[3].erase();
+    }
+    if (!(b.get_tool(moves[0]).get_color() != p.get_color() && b.get_tool(moves[0]).get_type() != '#') || p.get_pos()[1] == ASCII_8)
+    {
+        moves[0].erase();
+    }
+
+    std::vector<std::string> fin_moves;
+    for (int i = 0; i < moves.size(); i++)
+    {
+        if (moves[i] != "")
+        {
+            fin_moves.push_back(moves[i]);
+        }
+    }
+    p.setter_valid_moves(fin_moves);
+    return moves;
 }
 
 /*

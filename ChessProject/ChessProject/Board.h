@@ -9,6 +9,7 @@
 #include "Bishop.h"
 #include "Queen.h"
 #include "Knight.h"
+#include "Pawn.h"
 
 #define ASCII_1 49
 #define ASCII_a 97

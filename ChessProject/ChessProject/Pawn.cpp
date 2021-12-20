@@ -14,9 +14,9 @@ int Pawn::move(std::string _dst, Tool t, bool turn)
 {
 	int error = 0, i = 0;
 	int numColumn = 0, numRow = 0;
-	this->valid_moves.resize(14);
+	this->valid_moves.resize(6);
 
-	if (std::find(this->valid_moves.begin(), this->valid_moves.end(), _dst) != this->valid_moves.end()) //what if dst is valid_moves.end()?
+	if (std::find(this->valid_moves.begin(), this->valid_moves.end(), _dst) != this->valid_moves.end()) 
 	{
 		error = this->move_errors(_dst, t, turn);
 		if (error != 0)
@@ -32,32 +32,60 @@ int Pawn::move(std::string _dst, Tool t, bool turn)
 
 void Pawn::set_valid_moves(std::string pos)
 {
-	this->valid_moves.clear();
-	std::string tmp = "ab";
+    this->valid_moves.clear();
+    std::string tmp = "ab";
+    if (this->_color) //if white
+    {
+        if (pos[0] + 1 <= ASCII_h && pos[1] + 1 <= ASCII_8)
+        {
+            tmp[0] = pos[0] + 1;
+            tmp[1] = pos[1] + 1;
+            this->valid_moves.push_back(tmp);
+            tmp = pos;
+            tmp[1]++;
+            this->valid_moves.push_back(tmp);
+        }
 
-	if (pos[0] + 1 <= ASCII_h && pos[1] + 1 <= ASCII_8)
-	{
-		tmp[0] = pos[0] + 1;
-		tmp[1] = pos[1] + 1;
-		this->valid_moves.push_back(tmp);
-		tmp = pos;
-		tmp[1]++;
-		this->valid_moves.push_back(tmp);
-	}
+        if (pos[0] - 1 >= ASCII_a && pos[1] + 1 <= ASCII_8)
+        {
+            tmp[0] = pos[0] - 1;
+            tmp[1] = pos[1] + 1;
+            this->valid_moves.push_back(tmp);
+        }
 
-	if (pos[0] - 1 >= ASCII_a && pos[1] + 1 <= ASCII_8)
-	{
-		tmp[0] = pos[0] - 1;
-		tmp[1] = pos[1] + 1;
-		this->valid_moves.push_back(tmp);
-	}
+        if (this->first_move && pos[1] + 2 <= ASCII_8)
+        {
+            tmp = pos;
+            tmp[1] += 2;
+            this->valid_moves.push_back(tmp);
+        }
+    }
+    else //if black
+    {
+        if (pos[0] + 1 <= ASCII_h && pos[1] - 1 >= ASCII_1)
+        {
+            tmp[0] = pos[0] + 1;
+            tmp[1] = pos[1] - 1;
+            this->valid_moves.push_back(tmp);
+            tmp = pos;
+            tmp[1]--;
+            this->valid_moves.push_back(tmp);
+        }
 
-	if (this->first_move && pos[1] + 2 <= ASCII_8)
-	{
-		tmp = pos;
-		tmp[1] += 2;
-		this->valid_moves.push_back(tmp);
-	}
+        if (pos[0] - 1 >= ASCII_a && pos[1] - 1 >= ASCII_1)
+        {
+            tmp[0] = pos[0] - 1;
+            tmp[1] = pos[1] - 1;
+            this->valid_moves.push_back(tmp);
+        }
+
+        if (this->first_move && pos[1] - 2 >= ASCII_1)
+        {
+            tmp = pos;
+            tmp[1] -= 2;
+            this->valid_moves.push_back(tmp);
+        }
+    }
 }
 
 void Pawn::setter_valid_moves(std::vector<std::string> valid)
