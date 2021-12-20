@@ -1,3 +1,12 @@
+/*
+This file servers as an example of how to use Pipe.h file.
+It is recommended to use the following code in your project,
+in order to read and write information from and to the Backend
+*/
+
+#include "Pipe.h"
+#include <thread>
+
 #include <iostream>
 #include <algorithm>
 #include <string>
@@ -10,68 +19,99 @@
 #include "Pawn.h"
 #include <vector>
 
+using std::cout;
+using std::endl;
+using std::string;
+
 #define POSSIBLE_MOVES 14
 
 //full game
 //"RNBQKBNRPPPPPPPP################################pppppppprnbqkbnr0"
 
-void error_switch(int e, Board& b, Tool& t, std::string adr, Game g);
-std::vector<std::string> change_pawn_vector(Pawn p, Board b);
-std::vector<std::string> change_vector(std::vector<std::string> rook_valid_moves, Board b, Tool t);
-std::vector<std::string> get_enemy_valid_moves(bool turn, Board b);
-int check_check(std::vector<std::string> valid_moves, char king_check, Board b, bool turn, Game& g);
+//void error_switch(int e, Board& b, Tool& t, std::string adr, Game g);
+std::vector<string> change_pawn_vector(Pawn p, Board b);
+std::vector<string> change_vector(std::vector<string> rook_valid_moves, Board b, Tool t);
+std::vector<string> get_enemy_valid_moves(bool turn, Board b);
+int check_check(std::vector<string> valid_moves, char king_check, Board b, bool turn, Game& g);
+
+
 
 void main()
 {
     int error = 1, countTurns = 0;
     Board b;
-    Game g("RNBQKBNRPPPPPPPP################################pppppppprnbqkbnr0");
-    std::string adress_dst = "ab";
-    std::string adress_src = "ab";
-    std::string adr = "abcd";
-    std::vector<std::string> king_valid_moves;
-    std::vector<std::string> new_vector;
-    std::vector<std::string> check_vector;
-    std::vector<std::string> vector_valid_moves;
+    Tool t;
+    string adress_dst = "ab";
+    string adress_src = "ab";
+    string adr = "abcd";
+    std::vector<string> king_valid_moves;
+    std::vector<string> new_vector;
+    std::vector<string> check_vector;
+    std::vector<string> vector_valid_moves;
 
     bool turn = true; //true - white turn | false - black turn
     char king_check = 'K';  //K - white turn |k - black turn
 
-    std::string tmp_curr = "ab";
-    std::string tmp_king = "ab";
+    string tmp_curr = "ab";
+    string tmp_king = "ab";
+    string error_code = "ab";
 
     int num = 0, letter = 0;
     int i = 0, j = 0;
 
-    b = g.get_board();
-    b.print_board();
+    //rand(time_t(NULL));
 
-    while (adr != "exit" && adr != "Exit")
+    Pipe p;
+    bool isConnect = p.connect();
+
+    string ans;
+    while (!isConnect)
     {
-        error = 0;
-        check_vector.clear();
-        new_vector.clear();
-        vector_valid_moves.clear();
+        cout << "cant connect to graphics" << endl;
+        cout << "Do you try to connect again or exit? (0-try again, 1-exit)" << endl;
+        std::cin >> ans;
 
-        if (turn)
+        if (ans == "0")
         {
-            std::cout << "White turn.." << std::endl;
+            cout << "trying connect again.." << endl;
+            Sleep(5000);
+            isConnect = p.connect();
         }
         else
         {
-            std::cout << "Black turn.." << std::endl;
+            p.close();
+            return;
         }
+    }
 
-        std::cout << "Enter cordination or enter exit to end the program: ";
-        std::cin >> adr;
-        std::cout << std::endl;
+    char msgToGraphics[1024];
+    // msgToGraphics should contain the board string accord the protocol
+    // YOUR CODE
 
+    strcpy_s(msgToGraphics, "RNBQKBNRPPPPPPPP################################pppppppprnbqkbnr1"); // just example...
+    Game g("RNBQKBNRPPPPPPPP################################pppppppprnbqkbnr1");
+    b = g.get_board();
+
+    p.sendMessageToGraphics(msgToGraphics);   // send the board string
+
+    // get message from graphics
+    adr = p.getMessageFromGraphics();
+
+    while (msgToGraphics != "quit")
+    {
         adress_src[0] = adr[0];
         adress_src[1] = adr[1];
         adress_dst[0] = adr[2];
         adress_dst[1] = adr[3];
 
-        Tool t = b.get_tool(adress_src);
+        
+
+        error = 0;
+        check_vector.clear();
+        new_vector.clear();
+        vector_valid_moves.clear();
+
+        t = b.get_tool(adress_src);
 
         // error 5 (first cause he checks for existence of the tool index)
         if (adress_dst[0] < 97 || adress_dst[0] > 104 || adress_dst[1] < 49 || adress_dst[1] > 56)
@@ -231,7 +271,15 @@ void main()
                 vector_valid_moves = q.get_valid_moves();
                 vector_valid_moves.resize(28);
 
+                for (auto i : vector_valid_moves)
+                    std::cout << i << ' ';
+                std::cout << std::endl;
+
                 new_vector = change_vector(vector_valid_moves, b, t);
+
+                for (auto i : new_vector)
+                    std::cout << i << ' ';
+                std::cout << std::endl;
 
                 q.setter_valid_moves(new_vector);
 
@@ -376,16 +424,16 @@ void main()
             }
 
         }
-        error_switch(error, b, t, adress_dst, g);
+        //error_switch(error, b, t, adress_dst, g);
         if (error == 0 || error == 1 || error == 8)
         {
             g.add_turn(countTurns);
         }
         else
         {
-            for (auto i : new_vector)
+            /*for (auto i : new_vector)
                 std::cout << i << ' ';
-            std::cout << std::endl;
+            std::cout << std::endl;*/
         }
         if (g.get_turn() % 2 == 0)
         {
@@ -397,61 +445,77 @@ void main()
             turn = false;
             king_check = 'k';
         }
+
+        /******* JUST FOR EREZ DEBUGGING ******/
+        int r = rand() % 10; // just for debugging......
+        msgToGraphics[0] = (char)(error + '0');
+        msgToGraphics[1] = 0;
+        /******* JUST FOR EREZ DEBUGGING ******/
+
+
+        // return result to graphics		
+        p.sendMessageToGraphics(msgToGraphics);
+
+        // get message from graphics
+        adr = p.getMessageFromGraphics();
+
+
     }
+    p.close();
 }
 
-void error_switch(int e, Board& b, Tool& t, std::string adr, Game g)
-{
-    switch (e)
-    {
-    case valid_move:
-
-        b.move_piece(adr, t);
-        t.set_pos(adr);
-        b.print_board();
-        break;
-    case valid_check:
-        b.move_piece(adr, t);
-        t.set_pos(adr);
-        b.print_board();
-        std::cout << "Check!" << std::endl;
-        break;
-    case no_src:
-        std::cout << "Error: the position you chose is not your piece" << std::endl;
-        break;
-    case invalid_dst:
-        std::cout << "Error: You can't eat yourself ;)" << std::endl;
-        break;
-    case self_check:
-        std::cout << "Error: The move you just did cause self check" << std::endl;
-        break;
-    case invalid_index:
-        std::cout << "Error: The index you chose is out of board range (8-8)" << std::endl;
-        break;
-    case invalid_move:
-        std::cout << "Error: Invalid move of that tool " << std::endl;
-        break;
-    case same_src_dst:
-        std::cout << "Error: You can't move to the current spot" << std::endl;
-        break;
-    case mate:
-        b.move_piece(adr, t);
-        t.set_pos(adr);
-        b.print_board();
-        std::cout << "CheckMate!" << std::endl;
-        if (g.get_turn() == true)
-        {
-            std::cout << "White Won!" << std::endl;
-        }
-        else
-        {
-            std::cout << "Black Won!" << std::endl;
-        }
-        break;
-    default:
-        break;
-    }
-}
+//void error_switch(int e, Board& b, Tool& t, std::string adr, Game g)
+//{
+//    switch (e)
+//    {
+//    case valid_move:
+//
+//        b.move_piece(adr, t);
+//        t.set_pos(adr);
+//        b.print_board();
+//        break;
+//    case valid_check:
+//        b.move_piece(adr, t);
+//        t.set_pos(adr);
+//        b.print_board();
+//        std::cout << "Check!" << std::endl;
+//        break;
+//    case no_src:
+//        std::cout << "Error: the position you chose is not your piece" << std::endl;
+//        break;
+//    case invalid_dst:
+//        std::cout << "Error: You can't eat yourself ;)" << std::endl;
+//        break;
+//    case self_check:
+//        std::cout << "Error: The move you just did cause self check" << std::endl;
+//        break;
+//    case invalid_index:
+//        std::cout << "Error: The index you chose is out of board range (8-8)" << std::endl;
+//        break;
+//    case invalid_move:
+//        std::cout << "Error: Invalid move of that tool " << std::endl;
+//        break;
+//    case same_src_dst:
+//        std::cout << "Error: You can't move to the current spot" << std::endl;
+//        break;
+//    case mate:
+//        b.move_piece(adr, t);
+//        t.set_pos(adr);
+//        b.print_board();
+//        std::cout << "CheckMate!" << std::endl;
+//        if (g.get_turn() == true)
+//        {
+//            std::cout << "White Won!" << std::endl;
+//        }
+//        else
+//        {
+//            std::cout << "Black Won!" << std::endl;
+//        }
+//        break;
+//    default:
+//        break;
+//    }
+//}
 
 /*
 slicing the vector of the pawn only 
@@ -566,10 +630,10 @@ std::vector<std::string> change_vector(std::vector<std::string> valid_moves, Boa
     E = 'h' - pos[0];
 
     count = 0, counter = 0;
-    Ne = std::min(N, E);
-    Sw = std::min(S, W);
-    Se = std::min(S, E);
-    Nw = std::min(N, W);
+    Ne = min(N, E);
+    Sw = min(S, W);
+    Se = min(S, E);
+    Nw = min(N, W);
 
     //bishop and queen
     if (t.get_type() == 'b' || t.get_type() == 'B' || t.get_type() == 'q' || t.get_type() == 'Q')
