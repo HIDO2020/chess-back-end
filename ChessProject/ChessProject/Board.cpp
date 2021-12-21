@@ -15,7 +15,8 @@ Board::Board(std::string _board)
 			letterColumn = j + 97;        //asci from 1 --> a
 			pos[0] = letterColumn;
 			pos[1] = i + 49;
-			if (_board[count] == 'r' || _board[count] == 'R')
+			//add to board by each peace
+			if (_board[count] == 'r' || _board[count] == 'R')		
 			{
 				this->_board[i][j] = Rook(pos, _board[count]);
 			}
@@ -96,6 +97,9 @@ void Board::move_piece(std::string pos, Tool t)
 	this->_board[numRow][numColumn] = t;
 }
 
+/*
+get the tool from board by position
+*/
 Tool Board::get_tool(std::string pos)
 {
 	int numColumn = 0, numRow = 0;
@@ -112,6 +116,9 @@ Tool Board::get_tool(std::string pos)
 	return this->_board[numRow][numColumn];
 }
 
+/*
+get the position of the king by color
+*/
 Tool Board::get_king(bool color)
 {
 	for (int i = 0; i < 8; i++)

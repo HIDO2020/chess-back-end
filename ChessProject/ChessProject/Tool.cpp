@@ -68,8 +68,7 @@ int Tool::move_errors(std::string _dst, Tool t, bool turn)
         return same_src_dst;
     }
 
-    return 0;
-    //this->_pos = _dst;
+    return valid_move;
 }
 
 char Tool::get_type()

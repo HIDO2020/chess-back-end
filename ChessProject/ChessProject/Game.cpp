@@ -4,9 +4,9 @@ Game::Game(std::string _board_string)
 {
     this->_is_check_black = false;
     this->_is_check_white = false;
-    if (_board_string[64] == '0')       //check who start
+    if (_board_string[64] == '1')       //check who start
     {
-        this->_turn = 0;
+        this->_turn = true;
     }
     else
     {
@@ -45,16 +45,16 @@ void Game::set_white_check(const bool w)
     this->_is_check_white = w;
 }
 
-void Game::add_turn(const int t)
+void Game::set_turn(const int turn)
 {
-    this->_turn = this->_turn + 1;
+    this->_turn = turn;
 }
 
 
 /*
 function that checking wichh tool to handle and checking for errors
 */
-int Game::check_tool(Tool t, Board& b, Game& g, string adress_dst, string adress_src, bool turn, char king_check)
+int Game::check_tool(Tool t, string adress_dst, string adress_src, char king_check, Board &b)
 {
     std::vector<string> king_valid_moves;
     std::vector<string> new_vector;
@@ -71,14 +71,14 @@ int Game::check_tool(Tool t, Board& b, Game& g, string adress_dst, string adress
 
         k.setter_valid_moves(king_valid_moves);
 
-        error = k.move(adress_dst, b.get_tool(adress_dst), turn);
+        error = k.move(adress_dst, b.get_tool(adress_dst), this->_turn);
 
         if (error == 0)
         {
             b.move_piece(adress_dst, t);
             k.set_pos(adress_dst);
 
-            check_vector = get_enemy_valid_moves(turn, b);
+            check_vector = get_enemy_valid_moves(b);
 
             //checks if the pos of the king is in the valid moves of the enemy
             if (std::find(check_vector.begin(), check_vector.end(), adress_dst) != check_vector.end())
@@ -107,19 +107,19 @@ int Game::check_tool(Tool t, Board& b, Game& g, string adress_dst, string adress
 
 
 
-        new_vector = change_vector(vector_valid_moves, b, t);
+        new_vector = change_vector(vector_valid_moves, t, b);
 
         r.setter_valid_moves(new_vector);
 
-        error = r.move(adress_dst, b.get_tool(adress_dst), turn);
+        error = r.move(adress_dst, b.get_tool(adress_dst), this->_turn);
         if (error == 0)
         {
             b.move_piece(adress_dst, t);
 
-            check_vector = get_enemy_valid_moves(turn, b);
+            check_vector = get_enemy_valid_moves(b);
 
             //checks if the pos of the king is in the valid moves of the enemy
-            if (std::find(check_vector.begin(), check_vector.end(), b.get_king(turn).get_pos()) != check_vector.end())
+            if (std::find(check_vector.begin(), check_vector.end(), b.get_king(this->_turn).get_pos()) != check_vector.end())
             {
                 error = 4;
                 //back
@@ -137,13 +137,13 @@ int Game::check_tool(Tool t, Board& b, Game& g, string adress_dst, string adress
             //slice
             r.set_pos(adress_dst);
 
-            vector_valid_moves = change_vector(vector_valid_moves, b, t);
+            vector_valid_moves = change_vector(vector_valid_moves, t, b);
 
-            g.set_black_check(false);
-            g.set_white_check(false);
+            this->set_black_check(false);
+            this->set_white_check(false);
             if (error == 0)
             {
-                error = check_check(vector_valid_moves, king_check, b, turn, g);
+                error = check_check(vector_valid_moves, king_check, b);
             }
         }
 
@@ -161,19 +161,19 @@ int Game::check_tool(Tool t, Board& b, Game& g, string adress_dst, string adress
             vector_valid_moves.resize(14);
         }
 
-        new_vector = change_vector(vector_valid_moves, b, t);
+        new_vector = change_vector(vector_valid_moves, t, b);
 
         bi.setter_valid_moves(new_vector);
 
-        error = bi.move(adress_dst, b.get_tool(adress_dst), turn);
+        error = bi.move(adress_dst, b.get_tool(adress_dst), this->_turn);
         if (error == 0)
         {
             b.move_piece(adress_dst, t);
 
-            check_vector = get_enemy_valid_moves(turn, b);
+            check_vector = get_enemy_valid_moves(b);
 
             //checks if the pos of the king is in the valid moves of the enemy
-            if (std::find(check_vector.begin(), check_vector.end(), b.get_king(turn).get_pos()) != check_vector.end())
+            if (std::find(check_vector.begin(), check_vector.end(), b.get_king(this->_turn).get_pos()) != check_vector.end())
             {
                 error = 4;
                 //back
@@ -193,14 +193,14 @@ int Game::check_tool(Tool t, Board& b, Game& g, string adress_dst, string adress
 
             //slice
             bi.set_pos(adress_dst);
-            vector_valid_moves = change_vector(vector_valid_moves, b, t);
+            vector_valid_moves = change_vector(vector_valid_moves, t, b);
 
-            g.set_black_check(false);
-            g.set_white_check(false);
+            this->set_black_check(false);
+            this->set_white_check(false);
             vector_valid_moves = vector_valid_moves;
             if (error == 0)
             {
-                error = check_check(vector_valid_moves, king_check, b, turn, g);
+                error = check_check(vector_valid_moves, king_check, b);
             }
         }
     }
@@ -214,27 +214,19 @@ int Game::check_tool(Tool t, Board& b, Game& g, string adress_dst, string adress
         vector_valid_moves = q.get_valid_moves();
         vector_valid_moves.resize(28);
 
-        for (auto i : vector_valid_moves)
-            std::cout << i << ' ';
-        std::cout << std::endl;
-
-        new_vector = change_vector(vector_valid_moves, b, t);
-
-        for (auto i : new_vector)
-            std::cout << i << ' ';
-        std::cout << std::endl;
+        new_vector = change_vector(vector_valid_moves, t, b);
 
         q.setter_valid_moves(new_vector);
 
-        error = q.move(adress_dst, b.get_tool(adress_dst), turn);
+        error = q.move(adress_dst, b.get_tool(adress_dst), this->_turn);
         if (error == 0)
         {
             b.move_piece(adress_dst, t);
 
-            check_vector = get_enemy_valid_moves(turn, b);
+            check_vector = get_enemy_valid_moves(b);
 
             //checks if the pos of the king is in the valid moves of the enemy
-            if (std::find(check_vector.begin(), check_vector.end(), b.get_king(turn).get_pos()) != check_vector.end())
+            if (std::find(check_vector.begin(), check_vector.end(), b.get_king(this->_turn).get_pos()) != check_vector.end())
             {
                 error = 4;
                 //back
@@ -254,13 +246,13 @@ int Game::check_tool(Tool t, Board& b, Game& g, string adress_dst, string adress
             //b.move_piece(adress_dst, t);
             t.set_pos(adress_dst);
 
-            new_vector = change_vector(vector_valid_moves, b, t);
+            new_vector = change_vector(vector_valid_moves, t, b);
 
-            g.set_black_check(false);
-            g.set_white_check(false);
+            this->set_black_check(false);
+            this->set_white_check(false);
             if (error == 0)
             {
-                error = check_check(new_vector, king_check, b, turn, g);
+                error = check_check(new_vector, king_check, b);
             }
         }
     }
@@ -277,15 +269,15 @@ int Game::check_tool(Tool t, Board& b, Game& g, string adress_dst, string adress
         new_vector = vector_valid_moves;
         kn.setter_valid_moves(new_vector);
 
-        error = kn.move(adress_dst, b.get_tool(adress_dst), turn);
+        error = kn.move(adress_dst, b.get_tool(adress_dst), this->_turn);
         if (error == 0)
         {
             b.move_piece(adress_dst, t);
 
-            check_vector = get_enemy_valid_moves(turn, b);
+            check_vector = get_enemy_valid_moves(b);
 
             //checks if the pos of the king is in the valid moves of the enemy
-            if (std::find(check_vector.begin(), check_vector.end(), b.get_king(turn).get_pos()) != check_vector.end())
+            if (std::find(check_vector.begin(), check_vector.end(), b.get_king(this->_turn).get_pos()) != check_vector.end())
             {
                 error = 4;
                 //back
@@ -302,11 +294,11 @@ int Game::check_tool(Tool t, Board& b, Game& g, string adress_dst, string adress
             //slice
             kn.set_pos(adress_dst);
 
-            g.set_black_check(false);
-            g.set_white_check(false);
+            this->set_black_check(false);
+            this->set_white_check(false);
             if (error == 0)
             {
-                error = check_check(vector_valid_moves, king_check, b, turn, g);
+                error = check_check(vector_valid_moves, king_check, b);
             }
         }
     }
@@ -326,15 +318,15 @@ int Game::check_tool(Tool t, Board& b, Game& g, string adress_dst, string adress
 
         p.setter_valid_moves(new_vector);
 
-        error = p.move(adress_dst, b.get_tool(adress_dst), turn);
+        error = p.move(adress_dst, b.get_tool(adress_dst), this->_turn);
         if (error == 0)
         {
             b.move_piece(adress_dst, t);
 
-            check_vector = get_enemy_valid_moves(turn, b);
+            check_vector = get_enemy_valid_moves(b);
 
             //checks if the pos of the king is in the valid moves of the enemy
-            if (std::find(check_vector.begin(), check_vector.end(), b.get_king(turn).get_pos()) != check_vector.end())
+            if (std::find(check_vector.begin(), check_vector.end(), b.get_king(this->_turn).get_pos()) != check_vector.end())
             {
                 error = 4;
                 //back
@@ -352,11 +344,11 @@ int Game::check_tool(Tool t, Board& b, Game& g, string adress_dst, string adress
             p.set_pos(adress_dst);
             new_vector = change_pawn_vector(p, b);
 
-            g.set_black_check(false);
-            g.set_white_check(false);
+            this->set_black_check(false);
+            this->set_white_check(false);
             if (error == 0)
             {
-                error = check_check(vector_valid_moves, king_check, b, turn, g);
+                error = check_check(vector_valid_moves, king_check, b);
             }
         }
     }
@@ -465,7 +457,7 @@ std::vector<std::string> Game::change_pawn_vector(Pawn p, Board b)
 /*
 slicing the vector soo you can't jump over pieces
 */
-std::vector<std::string> Game::change_vector(std::vector<std::string> valid_moves, Board b, Tool t)
+std::vector<std::string> Game::change_vector(std::vector<std::string> valid_moves, Tool t, Board b)
 {
     std::vector<std::string> new_vector;
     std::string tmp_curr = "ab";
@@ -631,7 +623,7 @@ std::vector<std::string> Game::change_vector(std::vector<std::string> valid_move
 
 
 //get enenmy valids moves
-std::vector<std::string> Game::get_enemy_valid_moves(bool turn, Board b)
+std::vector<std::string> Game::get_enemy_valid_moves(Board b)
 {
     int i = 0, j = 0;
     std::vector<std::string> check_vector;
@@ -646,7 +638,7 @@ std::vector<std::string> Game::get_enemy_valid_moves(bool turn, Board b)
             tmp_curr[0] = j + 96;
             tmp_curr[1] = i + 48;
             Tool t = b.get_tool(tmp_curr);
-            if (turn)
+            if (this->_turn)
             {
                 if (t.get_type() == 'R')
                 {
@@ -655,7 +647,7 @@ std::vector<std::string> Game::get_enemy_valid_moves(bool turn, Board b)
                     r_tmp.set_valid_moves(r_tmp.get_pos());
                     new_vector = r_tmp.get_valid_moves();
                     new_vector.resize(14);
-                    new_vector = change_vector(new_vector, b, t);
+                    new_vector = change_vector(new_vector, t, b);
                     std::copy(new_vector.begin(), new_vector.end(), std::back_inserter(check_vector));
                 }
 
@@ -666,7 +658,7 @@ std::vector<std::string> Game::get_enemy_valid_moves(bool turn, Board b)
                     r_tmp.set_valid_moves(r_tmp.get_pos());
                     new_vector = r_tmp.get_valid_moves();
                     new_vector.resize(14);
-                    new_vector = change_vector(new_vector, b, t);
+                    new_vector = change_vector(new_vector, t, b);
                     std::copy(new_vector.begin(), new_vector.end(), std::back_inserter(check_vector));
                 }
 
@@ -677,7 +669,7 @@ std::vector<std::string> Game::get_enemy_valid_moves(bool turn, Board b)
                     r_tmp.set_valid_moves(r_tmp.get_pos());
                     new_vector = r_tmp.get_valid_moves();
                     new_vector.resize(28);
-                    new_vector = change_vector(new_vector, b, t);
+                    new_vector = change_vector(new_vector, t, b);
                     std::copy(new_vector.begin(), new_vector.end(), std::back_inserter(check_vector));
                 }
 
@@ -698,7 +690,6 @@ std::vector<std::string> Game::get_enemy_valid_moves(bool turn, Board b)
                     r_tmp.set_valid_moves(r_tmp.get_pos());
                     new_vector = r_tmp.get_valid_moves();
                     new_vector.resize(8);
-                    new_vector = change_vector(new_vector, b, t);
                     std::copy(new_vector.begin(), new_vector.end(), std::back_inserter(check_vector));
                 }
 
@@ -709,7 +700,7 @@ std::vector<std::string> Game::get_enemy_valid_moves(bool turn, Board b)
                     r_tmp.set_valid_moves(r_tmp.get_pos());
                     new_vector = r_tmp.get_valid_moves();
                     new_vector.resize(6);
-                    new_vector = change_vector(new_vector, b, t);
+                    new_vector = change_pawn_vector(r_tmp, b);
                     std::copy(new_vector.begin(), new_vector.end(), std::back_inserter(check_vector));
                 }
             }
@@ -722,7 +713,7 @@ std::vector<std::string> Game::get_enemy_valid_moves(bool turn, Board b)
                     r_tmp.set_valid_moves(r_tmp.get_pos());
                     new_vector = r_tmp.get_valid_moves();
                     new_vector.resize(14);
-                    new_vector = change_vector(new_vector, b, t);
+                    new_vector = change_vector(new_vector, t, b);
                     std::copy(new_vector.begin(), new_vector.end(), std::back_inserter(check_vector));
                 }
 
@@ -733,7 +724,7 @@ std::vector<std::string> Game::get_enemy_valid_moves(bool turn, Board b)
                     r_tmp.set_valid_moves(r_tmp.get_pos());
                     new_vector = r_tmp.get_valid_moves();
                     new_vector.resize(14);
-                    new_vector = change_vector(new_vector, b, t);
+                    new_vector = change_vector(new_vector, t, b);
                     std::copy(new_vector.begin(), new_vector.end(), std::back_inserter(check_vector));
                 }
 
@@ -744,7 +735,7 @@ std::vector<std::string> Game::get_enemy_valid_moves(bool turn, Board b)
                     r_tmp.set_valid_moves(r_tmp.get_pos());
                     new_vector = r_tmp.get_valid_moves();
                     new_vector.resize(28);
-                    new_vector = change_vector(new_vector, b, t);
+                    new_vector = change_vector(new_vector, t, b);
                     std::copy(new_vector.begin(), new_vector.end(), std::back_inserter(check_vector));
                 }
 
@@ -765,7 +756,6 @@ std::vector<std::string> Game::get_enemy_valid_moves(bool turn, Board b)
                     r_tmp.set_valid_moves(r_tmp.get_pos());
                     new_vector = r_tmp.get_valid_moves();
                     new_vector.resize(8);
-                    new_vector = change_vector(new_vector, b, t);
                     std::copy(new_vector.begin(), new_vector.end(), std::back_inserter(check_vector));
                 }
 
@@ -776,7 +766,7 @@ std::vector<std::string> Game::get_enemy_valid_moves(bool turn, Board b)
                     r_tmp.set_valid_moves(r_tmp.get_pos());
                     new_vector = r_tmp.get_valid_moves();
                     new_vector.resize(6);
-                    new_vector = change_vector(new_vector, b, t);
+                    new_vector = change_pawn_vector(r_tmp, b);
                     std::copy(new_vector.begin(), new_vector.end(), std::back_inserter(check_vector));
                 }
             }
@@ -788,7 +778,7 @@ std::vector<std::string> Game::get_enemy_valid_moves(bool turn, Board b)
 /*
 checking if there king in the valid moves
 */
-int Game::check_check(std::vector<std::string> valid_moves, char king_check, Board b, bool turn, Game& g)
+int Game::check_check(std::vector<std::string> valid_moves, char king_check, Board b)
 {
     int error = 0;
 
@@ -800,13 +790,13 @@ int Game::check_check(std::vector<std::string> valid_moves, char king_check, Boa
             {
 
                 error = 1;
-                if (turn)
+                if (this->_turn)
                 {
-                    g.set_black_check(true);
+                    this->set_black_check(true);
                 }
                 else
                 {
-                    g.set_white_check(true);
+                    this->set_white_check(true);
                 }
             }
         }

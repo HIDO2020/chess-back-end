@@ -36,4 +36,5 @@ protected:
     std::string _pos;
     bool _color;
     char _type;
+
 };

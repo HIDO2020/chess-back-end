@@ -27,16 +27,16 @@ public:
 	//setters
 	void set_black_check(const bool b);
 	void set_white_check(const bool w);
-	void add_turn(const int t);
+	void set_turn(const int t);
 
 	/*
 	Functions
 	*/
-	int check_tool(Tool t, Board& b, Game& g, string adress_dst, string adress_src, bool turn, char king_check);
-	static std::vector<string> change_pawn_vector(Pawn p, Board b);
-	static std::vector<string> change_vector(std::vector<string> rook_valid_moves, Board b, Tool t);
-	static std::vector<string> get_enemy_valid_moves(bool turn, Board b);
-	static int check_check(std::vector<string> valid_moves, char king_check, Board b, bool turn, Game& g);
+	int check_tool(Tool t, string adress_dst, string adress_src, char king_check, Board &b);
+	std::vector<string> change_pawn_vector(Pawn p, Board b);
+	std::vector<string> change_vector(std::vector<std::string> valid_moves, Tool t, Board b);
+	std::vector<string> get_enemy_valid_moves(Board b);
+	int check_check(std::vector<std::string> valid_moves, char king_check, Board b);
 	
 
 
@@ -44,6 +44,12 @@ private:
 	//fields
 	bool _is_check_white;
 	bool _is_check_black;
-	int _turn = 0;
+	bool _turn;
 	Board _board;
+
+	////casteling
+	//bool white_short;
+	//bool white_long;
+	//bool black_short;
+	//bool black_long;
 };
