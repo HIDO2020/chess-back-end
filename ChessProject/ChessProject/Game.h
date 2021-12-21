@@ -46,10 +46,4 @@ private:
 	bool _is_check_black;
 	bool _turn;
 	Board _board;
-
-	////casteling
-	//bool white_short;
-	//bool white_long;
-	//bool black_short;
-	//bool black_long;
 };

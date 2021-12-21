@@ -3,6 +3,7 @@
 
 Tool::Tool(std::string pos, char type)
 {
+    // upper case is black & the oposite
     if (isupper(type))
     {
         this->_color = false;

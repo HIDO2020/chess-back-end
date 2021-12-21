@@ -4,7 +4,7 @@ Game::Game(std::string _board_string)
 {
     this->_is_check_black = false;
     this->_is_check_white = false;
-    if (_board_string[64] == '1')       //check who start
+    if (_board_string[64] == '1')       //check who start (and doing the opposite cause of the graphic problem)
     {
         this->_turn = true;
     }
@@ -64,16 +64,18 @@ int Game::check_tool(Tool t, string adress_dst, string adress_src, char king_che
 
     if (t.get_type() == 'k' || t.get_type() == 'K') //king
     {
+        //create king & get valid moves
         King k(t.get_pos(), t.get_type());
         k.set_valid_moves(k.get_pos());
         king_valid_moves = k.get_valid_moves();
         king_valid_moves.resize(9);
-
         k.setter_valid_moves(king_valid_moves);
 
+        //check for errors
         error = k.move(adress_dst, b.get_tool(adress_dst), this->_turn);
 
-        if (error == 0)
+        //error 4
+        if (error == valid_move)
         {
             b.move_piece(adress_dst, t);
             k.set_pos(adress_dst);
@@ -83,7 +85,7 @@ int Game::check_tool(Tool t, string adress_dst, string adress_src, char king_che
             //checks if the pos of the king is in the valid moves of the enemy
             if (std::find(check_vector.begin(), check_vector.end(), adress_dst) != check_vector.end())
             {
-                error = 4;
+                error = self_check;
                 //back
                 b.move_piece(adress_src, t);
                 Tool t = b.get_tool(adress_dst);
@@ -96,23 +98,22 @@ int Game::check_tool(Tool t, string adress_dst, string adress_src, char king_che
 
     else if (t.get_type() == 'r' || t.get_type() == 'R') //rook
     {
+        //create rook & get valid moves
         Rook r(t.get_pos(), t.get_type());
-        //slicing
         vector_valid_moves.clear();
         r.set_valid_moves(r.get_pos());
         vector_valid_moves = r.get_valid_moves();
         vector_valid_moves.resize(14);
-
         new_vector.clear();
-
-
-
+        //get only the available moves (no skip pieces)
         new_vector = change_vector(vector_valid_moves, t, b);
-
         r.setter_valid_moves(new_vector);
 
+        //check for errors
         error = r.move(adress_dst, b.get_tool(adress_dst), this->_turn);
-        if (error == 0)
+
+        //error 4
+        if (error == valid_move)
         {
             b.move_piece(adress_dst, t);
 
@@ -121,7 +122,7 @@ int Game::check_tool(Tool t, string adress_dst, string adress_src, char king_che
             //checks if the pos of the king is in the valid moves of the enemy
             if (std::find(check_vector.begin(), check_vector.end(), b.get_king(this->_turn).get_pos()) != check_vector.end())
             {
-                error = 4;
+                error = self_check;
                 //back
                 b.move_piece(adress_src, t);
                 Tool t = b.get_tool(adress_dst);
@@ -129,19 +130,20 @@ int Game::check_tool(Tool t, string adress_dst, string adress_src, char king_che
                 b.move_piece(adress_dst, t);
             }
 
+            //check if doing check
 
             r.set_valid_moves(adress_dst);
             vector_valid_moves = r.get_valid_moves();
             vector_valid_moves.resize(14);
-
-            //slice
             r.set_pos(adress_dst);
 
+            //get only the available moves (no skip pieces)
             vector_valid_moves = change_vector(vector_valid_moves, t, b);
 
+            //reset check
             this->set_black_check(false);
             this->set_white_check(false);
-            if (error == 0)
+            if (error == valid_move)
             {
                 error = check_check(vector_valid_moves, king_check, b);
             }
@@ -152,8 +154,8 @@ int Game::check_tool(Tool t, string adress_dst, string adress_src, char king_che
 
     else if (t.get_type() == 'b' || t.get_type() == 'B') //bishop
     {
+        //create bishop & get valid moves
         Bishop bi(t.get_pos(), t.get_type());
-        //slicing
         bi.set_valid_moves(bi.get_pos());
         vector_valid_moves = bi.get_valid_moves();
         if (vector_valid_moves.size() > 14)
@@ -161,12 +163,14 @@ int Game::check_tool(Tool t, string adress_dst, string adress_src, char king_che
             vector_valid_moves.resize(14);
         }
 
+        //get only the available moves (no skip pieces)
         new_vector = change_vector(vector_valid_moves, t, b);
-
         bi.setter_valid_moves(new_vector);
 
+        //check for errors
         error = bi.move(adress_dst, b.get_tool(adress_dst), this->_turn);
-        if (error == 0)
+        //error 4
+        if (error == valid_move)
         {
             b.move_piece(adress_dst, t);
 
@@ -175,7 +179,7 @@ int Game::check_tool(Tool t, string adress_dst, string adress_src, char king_che
             //checks if the pos of the king is in the valid moves of the enemy
             if (std::find(check_vector.begin(), check_vector.end(), b.get_king(this->_turn).get_pos()) != check_vector.end())
             {
-                error = 4;
+                error = self_check;
                 //back
                 b.move_piece(adress_src, t);
                 Tool t = b.get_tool(adress_dst);
@@ -183,22 +187,20 @@ int Game::check_tool(Tool t, string adress_dst, string adress_src, char king_che
                 b.move_piece(adress_dst, t);
             }
 
+            //check if doing check
+
             bi.set_valid_moves(adress_dst);
             vector_valid_moves = bi.get_valid_moves();
             vector_valid_moves.resize(14);
-
-            for (auto i : vector_valid_moves)
-                std::cout << i << ' ';
-            std::cout << std::endl;
-
-            //slice
             bi.set_pos(adress_dst);
+            //get only the available moves (no skip pieces)
             vector_valid_moves = change_vector(vector_valid_moves, t, b);
 
+            //reset check
             this->set_black_check(false);
             this->set_white_check(false);
             vector_valid_moves = vector_valid_moves;
-            if (error == 0)
+            if (error == valid_move)
             {
                 error = check_check(vector_valid_moves, king_check, b);
             }
@@ -208,18 +210,19 @@ int Game::check_tool(Tool t, string adress_dst, string adress_src, char king_che
 
     else if (t.get_type() == 'q' || t.get_type() == 'Q') //Queen
     {
+        //create queen & get valid moves
         Queen q(t.get_pos(), t.get_type());
         //slicing
         q.set_valid_moves(q.get_pos());
         vector_valid_moves = q.get_valid_moves();
         vector_valid_moves.resize(28);
-
+        //get only the available moves (no skip pieces)
         new_vector = change_vector(vector_valid_moves, t, b);
-
         q.setter_valid_moves(new_vector);
-
+        //check for errors
         error = q.move(adress_dst, b.get_tool(adress_dst), this->_turn);
-        if (error == 0)
+        //error 4
+        if (error == valid_move)
         {
             b.move_piece(adress_dst, t);
 
@@ -228,7 +231,7 @@ int Game::check_tool(Tool t, string adress_dst, string adress_src, char king_che
             //checks if the pos of the king is in the valid moves of the enemy
             if (std::find(check_vector.begin(), check_vector.end(), b.get_king(this->_turn).get_pos()) != check_vector.end())
             {
-                error = 4;
+                error = self_check;
                 //back
                 b.move_piece(adress_src, t);
                 Tool t = b.get_tool(adress_dst);
@@ -236,21 +239,20 @@ int Game::check_tool(Tool t, string adress_dst, string adress_src, char king_che
                 b.move_piece(adress_dst, t);
             }
 
+            //check if doing check
+
             q.set_valid_moves(adress_dst);
             vector_valid_moves = q.get_valid_moves();
             vector_valid_moves.resize(28);
 
-            std::cout << std::endl;
-            //slice
-
-            //b.move_piece(adress_dst, t);
             t.set_pos(adress_dst);
-
+            //get only the available moves (no skip pieces)
             new_vector = change_vector(vector_valid_moves, t, b);
 
+            //reset check
             this->set_black_check(false);
             this->set_white_check(false);
-            if (error == 0)
+            if (error == valid_move)
             {
                 error = check_check(new_vector, king_check, b);
             }
@@ -260,17 +262,19 @@ int Game::check_tool(Tool t, string adress_dst, string adress_src, char king_che
 
     else if (t.get_type() == 'n' || t.get_type() == 'N') //knight
     {
+        //create knight & get valid moves
         Knight kn(t.get_pos(), t.get_type());
-        //slicing
         vector_valid_moves.clear();
         kn.set_valid_moves(kn.get_pos());
         vector_valid_moves = kn.get_valid_moves();
         vector_valid_moves.resize(8);
+        //the knight can skip ove pieces
         new_vector = vector_valid_moves;
         kn.setter_valid_moves(new_vector);
-
+        //check for errors
         error = kn.move(adress_dst, b.get_tool(adress_dst), this->_turn);
-        if (error == 0)
+        //error 4
+        if (error == valid_move)
         {
             b.move_piece(adress_dst, t);
 
@@ -279,7 +283,7 @@ int Game::check_tool(Tool t, string adress_dst, string adress_src, char king_che
             //checks if the pos of the king is in the valid moves of the enemy
             if (std::find(check_vector.begin(), check_vector.end(), b.get_king(this->_turn).get_pos()) != check_vector.end())
             {
-                error = 4;
+                error = self_check;
                 //back
                 b.move_piece(adress_src, t);
                 Tool t = b.get_tool(adress_dst);
@@ -287,16 +291,18 @@ int Game::check_tool(Tool t, string adress_dst, string adress_src, char king_che
                 b.move_piece(adress_dst, t);
             }
 
+            //check if doing check
+
             kn.set_valid_moves(adress_dst);
             vector_valid_moves = kn.get_valid_moves();
             vector_valid_moves.resize(8);
 
             //slice
             kn.set_pos(adress_dst);
-
+            //reset check
             this->set_black_check(false);
             this->set_white_check(false);
-            if (error == 0)
+            if (error == valid_move)
             {
                 error = check_check(vector_valid_moves, king_check, b);
             }
@@ -306,20 +312,20 @@ int Game::check_tool(Tool t, string adress_dst, string adress_src, char king_che
 
     else if (t.get_type() == 'p' || t.get_type() == 'P') //Pawn
     {
+        //create pawn & get valid moves
         Pawn p(t.get_pos(), t.get_type());
-        //slicing
         vector_valid_moves.clear();
         p.set_valid_moves(p.get_pos());
         vector_valid_moves = p.get_valid_moves();
         vector_valid_moves.resize(6);
         p.setter_valid_moves(vector_valid_moves);
-
+        //get only the available moves (no skip pieces)
         new_vector = change_pawn_vector(p, b);
-
         p.setter_valid_moves(new_vector);
-
+        //check for errors
         error = p.move(adress_dst, b.get_tool(adress_dst), this->_turn);
-        if (error == 0)
+        //error 4
+        if (error == valid_move)
         {
             b.move_piece(adress_dst, t);
 
@@ -328,25 +334,25 @@ int Game::check_tool(Tool t, string adress_dst, string adress_src, char king_che
             //checks if the pos of the king is in the valid moves of the enemy
             if (std::find(check_vector.begin(), check_vector.end(), b.get_king(this->_turn).get_pos()) != check_vector.end())
             {
-                error = 4;
+                error = self_check;
                 //back
                 b.move_piece(adress_src, t);
                 Tool t = b.get_tool(adress_dst);
                 t.set_type('#');
                 b.move_piece(adress_dst, t);
             }
-
+            
+            //check if doing check
             p.set_valid_moves(adress_dst);
             vector_valid_moves = p.get_valid_moves();
             vector_valid_moves.resize(8);
 
-            //slice
             p.set_pos(adress_dst);
             new_vector = change_pawn_vector(p, b);
-
+            //reset check
             this->set_black_check(false);
             this->set_white_check(false);
-            if (error == 0)
+            if (error == valid_move)
             {
                 error = check_check(vector_valid_moves, king_check, b);
             }
@@ -456,6 +462,8 @@ std::vector<std::string> Game::change_pawn_vector(Pawn p, Board b)
 
 /*
 slicing the vector soo you can't jump over pieces
+working by going throught the vector in each direction and push to the other vector 
+until tool pops up in the vector and then going into other direction
 */
 std::vector<std::string> Game::change_vector(std::vector<std::string> valid_moves, Tool t, Board b)
 {
@@ -550,7 +558,7 @@ std::vector<std::string> Game::change_vector(std::vector<std::string> valid_move
     {
         if (t.get_type() == 'q' || t.get_type() == 'Q')
         {
-            queen_counter = Ne + Sw + Se + Nw;
+            queen_counter = Ne + Sw + Se + Nw;      
         }
         counter = 0;
         count = S + queen_counter;
@@ -631,6 +639,7 @@ std::vector<std::string> Game::get_enemy_valid_moves(Board b)
     check_vector.clear();
     std::string tmp_curr = "ab";
 
+    //going throught the board
     for (j = 1; j <= 8; j++)
     {
         for (i = 1; i <= 8; i++)
@@ -638,6 +647,7 @@ std::vector<std::string> Game::get_enemy_valid_moves(Board b)
             tmp_curr[0] = j + 96;
             tmp_curr[1] = i + 48;
             Tool t = b.get_tool(tmp_curr);
+            //gets only the enemy
             if (this->_turn)
             {
                 if (t.get_type() == 'R')
@@ -786,10 +796,10 @@ int Game::check_check(std::vector<std::string> valid_moves, char king_check, Boa
     {
         if (b.get_tool(i).get_type() == king_check)
         {
-            if (error == 0) //valid
+            if (error == valid_move) //valid
             {
 
-                error = 1;
+                error = valid_check;
                 if (this->_turn)
                 {
                     this->set_black_check(true);

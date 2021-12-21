@@ -30,7 +30,7 @@ using std::string;
 
 void main()
 {
-    int error = 0, countTurns = 0;
+    int error = 0, countTurns = 0, i = 0;
     Board b;
     Tool t;
     string adress_dst = "ab";
@@ -40,12 +40,7 @@ void main()
     bool turn = true; //true - white turn | false - black turn
     char king_check = 'K';  //K - white turn |k - black turn
 
-    string tmp_curr = "ab";
-    string tmp_king = "ab";
     string error_code = "ab";
-
-    int num = 0, letter = 0;
-    int i = 0, j = 0;
 
     Pipe p;
     bool isConnect = p.connect();
@@ -126,13 +121,11 @@ void main()
         msgToGraphics[1] = 0;
         /******* JUST FOR EREZ DEBUGGING ******/
 
-
         // return result to graphics		
         p.sendMessageToGraphics(msgToGraphics);
 
         // get message from graphics
         adr = p.getMessageFromGraphics();
-
 
     }
     p.close();
