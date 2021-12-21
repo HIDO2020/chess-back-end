@@ -376,37 +376,39 @@ std::vector<std::string> Game::change_pawn_vector(Pawn p, Board b)
     std::vector<std::string> moves = p.get_valid_moves();
     std::string tmp = "ab";
     moves.resize(4);
-    if (p.get_pos() == "h4")
-    {
-        tmp = "sd";
-    }
+    
     for (int i = 0; i < 4; i++)
     {
         if (moves[i] != "")
         {
-            if (p.get_color())
+            /// pawn algorithem:
+            /// I have 4 'if' condition for each of the pawn's possible moves
+            /// each of the 'if' checks if theres a tool in that positions
+            /// and make the right changes according to that
+            /// we have one for white (goes up) 
+            /// and one for black (only move down
+     
+            if (p.get_color()) //if white
             {
                 if ((moves[i][0] > p.get_pos()[0] || moves[i][0] < p.get_pos()[0]) &&
                     (b.get_tool(moves[i]).get_color() == p.get_color() || b.get_tool(moves[i]).get_type() == '#'))
                 {
                     moves[i].erase();
-                    continue;
+                    continue; //if we erase we need to skip to the beginning otherwise the code will crash
                 }
 
                 if (moves[i][1] - 1 == p.get_pos()[1] && moves[i][0] == p.get_pos()[0] && b.get_tool(moves[i]).get_type() != '#')
                 {
                     tmp[0] = moves[i][0];
                     tmp[1] = moves[i][1] + 1;
-                    //if (std::find(moves.begin(), moves.end(), tmp) != moves.end())
-                    //{
+                    
                     for (int j = 0; j < 4; j++)
                     {
                         if (moves[j] == tmp)
                             moves[j].erase();
                     }
-                    //}
+
                     moves[i].erase();
-                    //moves[i + 1].erase();
                     continue;
                 }
                 if (moves[i][1] - 2 == p.get_pos()[1] && moves[i][0] == p.get_pos()[0] && b.get_tool(moves[i]).get_type() != '#')
@@ -414,7 +416,7 @@ std::vector<std::string> Game::change_pawn_vector(Pawn p, Board b)
                     moves[i].erase();
                 }
             }
-            else
+            else //if black
             {
                 if ((moves[i][0] > p.get_pos()[0] || moves[i][0] < p.get_pos()[0]) &&
                     (b.get_tool(moves[i]).get_color() == p.get_color() || b.get_tool(moves[i]).get_type() == '#'))
@@ -427,16 +429,14 @@ std::vector<std::string> Game::change_pawn_vector(Pawn p, Board b)
                 {
                     tmp[0] = moves[i][0];
                     tmp[1] = moves[i][1] - 1;
-                    //if (std::find(moves.begin(), moves.end(), tmp) != moves.end())
-                    //{
+                   
                     for (int j = 0; j < 4; j++)
                     {
                         if (moves[j] == tmp)
                             moves[j].erase();
                     }
-                    //}
+
                     moves[i].erase();
-                    //moves[i + 1].erase();
                     continue;
                 }
                 if (moves[i][1] + 2 == p.get_pos()[1] && moves[i][0] == p.get_pos()[0] && b.get_tool(moves[i]).get_type() != '#')
@@ -449,7 +449,7 @@ std::vector<std::string> Game::change_pawn_vector(Pawn p, Board b)
 
 
     std::vector<std::string> fin_moves;
-    for (int i = 0; i < moves.size(); i++)
+    for (int i = 0; i < moves.size(); i++) //takes the possible moves after their check
     {
         if (moves[i] != "")
         {
@@ -648,7 +648,7 @@ std::vector<std::string> Game::get_enemy_valid_moves(Board b)
             tmp_curr[1] = i + 48;
             Tool t = b.get_tool(tmp_curr);
             //gets only the enemy
-            if (this->_turn)
+            if (this->_turn == WHITE)
             {
                 if (t.get_type() == 'R')
                 {

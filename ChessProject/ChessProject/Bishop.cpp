@@ -36,28 +36,33 @@ void Bishop::set_valid_moves(std::string pos)
     this->valid_moves.clear();
     std::string start = pos, add = " ";
     char num = ' ';
-    while (start[0] + 1 <= ASCII_h && start[1] + 1 <= ASCII_8)
+    /////////
+    /// I divided the bishop move into four parts:
+    /// the up left, up right, down left and down right movement
+    /// every while is adding the positions until its out of boundries
+    /////////
+    while (start[0] + 1 <= ASCII_h && start[1] + 1 <= ASCII_8) //up right 
     {
         start[0]++;
         start[1]++;
         this->valid_moves.push_back(start);
     }
     start = pos;
-    while (start[0] - 1 >= ASCII_a && start[1] - 1 >= ASCII_1)
+    while (start[0] - 1 >= ASCII_a && start[1] - 1 >= ASCII_1) //down left
     {
         start[0]--;
         start[1]--;
         this->valid_moves.push_back(start);
     }
     start = pos;
-    while (start[0] - 1 >= ASCII_a && start[1] + 1 <= ASCII_8)
+    while (start[0] - 1 >= ASCII_a && start[1] + 1 <= ASCII_8) //up left
     {
         start[0]--;
         start[1]++;
         this->valid_moves.push_back(start);
     }
     start = pos;
-    while (start[0] + 1 <= ASCII_h && start[1] - 1 >= ASCII_1)
+    while (start[0] + 1 <= ASCII_h && start[1] - 1 >= ASCII_1) //down right
     {
         start[0]++;
         start[1]--;

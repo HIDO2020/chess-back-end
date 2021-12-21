@@ -36,34 +36,34 @@ void Pawn::set_valid_moves(std::string pos)
     std::string tmp = "ab";
     if (this->_color) //if white
     {
-        if (pos[1] == '2')
+        if (pos[1] == '2') //if pawn is at his starting point
             this->first_move = true;
         else
             this->first_move = false;
 
 
-        if (pos[0] + 1 <= ASCII_h && pos[1] + 1 <= ASCII_8)
+        if (pos[0] + 1 <= ASCII_h && pos[1] + 1 <= ASCII_8) // if pos one up and one right is not out of boundries
         {
             tmp[0] = pos[0] + 1;
             tmp[1] = pos[1] + 1;
             this->valid_moves.push_back(tmp);
         }
 
-        if (pos[1] + 1 <= ASCII_8)
+        if (pos[1] + 1 <= ASCII_8) //if one up is in boundries
         {
             tmp = pos;
             tmp[1]++;
             this->valid_moves.push_back(tmp);
         }
 
-        if (pos[0] - 1 >= ASCII_a && pos[1] + 1 <= ASCII_8)
+        if (pos[0] - 1 >= ASCII_a && pos[1] + 1 <= ASCII_8) // if pos one up and one left is not out of boundries
         {
             tmp[0] = pos[0] - 1;
             tmp[1] = pos[1] + 1;
             this->valid_moves.push_back(tmp);
         }
 
-        if (this->first_move && pos[1] + 2 <= ASCII_8)
+        if (this->first_move && pos[1] + 2 <= ASCII_8) //if pawn can move two forward and is not out of boundries
         {
             tmp = pos;
             tmp[1] += 2;
@@ -72,34 +72,34 @@ void Pawn::set_valid_moves(std::string pos)
     }
     else //if black
     {
-        if (pos[1] == '7')
+        if (pos[1] == '7') //if pawn is at his starting point
             this->first_move = true;
         else
             this->first_move = false;
 
 
-        if (pos[0] + 1 <= ASCII_h && pos[1] - 1 >= ASCII_1)
+        if (pos[0] + 1 <= ASCII_h && pos[1] - 1 >= ASCII_1) // if pos one down and one right is not out of boundries
         {
             tmp[0] = pos[0] + 1;
             tmp[1] = pos[1] - 1;
             this->valid_moves.push_back(tmp);
         }
 
-        if (pos[1] - 1 >= ASCII_1)
+        if (pos[1] - 1 >= ASCII_1) //if one down is in boundries
         {
             tmp = pos;
             tmp[1]--;
             this->valid_moves.push_back(tmp);
         }
 
-        if (pos[0] - 1 >= ASCII_a && pos[1] - 1 >= ASCII_1)
+        if (pos[0] - 1 >= ASCII_a && pos[1] - 1 >= ASCII_1) // if pos one down and one left is not out of boundries
         {
             tmp[0] = pos[0] - 1;
             tmp[1] = pos[1] - 1;
             this->valid_moves.push_back(tmp);
         }
 
-        if (this->first_move && pos[1] - 2 >= ASCII_1)
+        if (this->first_move && pos[1] - 2 >= ASCII_1) //if pawn can move two downwards and is not out of boundries
         {
             tmp = pos;
             tmp[1] -= 2;

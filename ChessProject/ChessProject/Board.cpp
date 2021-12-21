@@ -125,11 +125,11 @@ Tool Board::get_king(bool color)
 	{
 		for (int j = 0; j < 8; j++)
 		{
-			if (this->_board[i][j].get_color() == true && this->_board[i][j].get_type() == 'k' && this->_board[i][j].get_color() == color)
+			if (this->_board[i][j].get_color() == WHITE && this->_board[i][j].get_type() == 'k' && this->_board[i][j].get_color() == color)
 			{
 				return this->_board[i][j];
 			}
-			else if (this->_board[i][j].get_color() == false && this->_board[i][j].get_type() == 'K' && this->_board[i][j].get_color() == color)
+			else if (this->_board[i][j].get_color() == BLACK && this->_board[i][j].get_type() == 'K' && this->_board[i][j].get_color() == color)
 			{
 				return this->_board[i][j];
 			}

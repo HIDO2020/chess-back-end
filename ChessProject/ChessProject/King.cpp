@@ -11,6 +11,7 @@ int King::move(std::string _dst, Tool t, bool turn)
     int error = 0;
     this->valid_moves.resize(POSSIBLE_MOVES);
 
+    //if dst is not in the possible moves
     if (std::find(this->valid_moves.begin(), this->valid_moves.end(), _dst) != this->valid_moves.end())
     {
         error = this->move_errors(_dst, t, turn);

@@ -2,6 +2,8 @@
 #include <iostream>
 #include <cstring>
 
+#define BLACK false
+#define WHITE true
 enum check_move { 
     valid_move,
     valid_check,

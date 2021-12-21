@@ -6,11 +6,11 @@ Tool::Tool(std::string pos, char type)
     // upper case is black & the oposite
     if (isupper(type))
     {
-        this->_color = false;
+        this->_color = BLACK;
     }
     else
     {
-        this->_color = true;
+        this->_color = WHITE;
     }
     this->_pos = pos;
     this->_type = type;
@@ -18,7 +18,7 @@ Tool::Tool(std::string pos, char type)
 
 Tool::Tool()
 {
-    this->_color = false;
+    this->_color = BLACK;
     this->_pos = " ";
     this->_type = '#';
 }

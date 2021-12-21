@@ -30,7 +30,7 @@ void Rook::set_valid_moves(std::string pos)
     std::string add = " ";
     char num = ' ';
     int count = 0; //counts the index of the array
-    for (int i = 0; i < 8; i++) //a1, a2, a3...
+    for (int i = 0; i < 8; i++) //add the possible x part
     {
         num = i + 49; //to convert i to ascii
         add = pos[0];
@@ -41,7 +41,7 @@ void Rook::set_valid_moves(std::string pos)
         count++;
     }
 
-    for (int i = 0; i < 8; i++)
+    for (int i = 0; i < 8; i++) //add the possible y part
     {
         num = i + 97; //to convert i to letter ascii
         add = num;

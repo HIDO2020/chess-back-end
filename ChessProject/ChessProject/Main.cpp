@@ -37,7 +37,7 @@ void main()
     string adress_src = "ab";
     string adr = "abcd";  
 
-    bool turn = true; //true - white turn | false - black turn
+    bool turn = WHITE; //true - white turn | false - black turn
     char king_check = 'K';  //K - white turn |k - black turn
 
     string error_code = "ab";
@@ -106,12 +106,12 @@ void main()
 
         if (countTurns % 2 == 0)      //change turn
         {
-            g.set_turn(true);
+            g.set_turn(WHITE);
             king_check = 'K';
         }
         else
         {
-            g.set_turn(false);
+            g.set_turn(BLACK);
             king_check = 'k';
         }
 
