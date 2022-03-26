@@ -755,7 +755,7 @@ std::vector<std::string> Game::get_enemy_valid_moves(Board b)
                     //slicing
                     r_tmp.set_valid_moves(r_tmp.get_pos());
                     new_vector = r_tmp.get_valid_moves();
-                    new_vector.resize(28);
+                    new_vector.resize(8);
                     std::copy(new_vector.begin(), new_vector.end(), std::back_inserter(check_vector));
                 }
 

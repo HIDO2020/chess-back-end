@@ -25,7 +25,8 @@ using std::string;
 #define POSSIBLE_MOVES 14
 
 //full game
-//"RNBQKBNRPPPPPPPP################################pppppppprnbqkbnr0"
+//"rnbqkbnrpppppppp################################PPPPPPPPRNBQKBNR0"
+//RNBQKBNRPPPPPPPP################################pppppppprnbqkbnr1
 
 
 void main()
@@ -68,7 +69,7 @@ void main()
     char msgToGraphics[1024];
     // msgToGraphics contain the board string accord the protocol
 
-    strcpy_s(msgToGraphics, "RNBQKBNRPPPPPPPP################################pppppppprnbqkbnr1"); 
+    strcpy_s(msgToGraphics, "RNBQKBNRPPPPPPPP################################pppppppprnbqkbnr1");
     Game g("RNBQKBNRPPPPPPPP################################pppppppprnbqkbnr1");
     b = g.get_board();
 
