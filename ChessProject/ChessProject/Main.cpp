@@ -23,6 +23,10 @@ using std::endl;
 using std::string;
 
 #define POSSIBLE_MOVES 14
+#define a_ASCII 97
+#define h_ASCII 104
+#define one_ASCII 97
+#define eight_ASCII 104
 
 //full game
 //"rnbqkbnrpppppppp################################PPPPPPPPRNBQKBNR0"
@@ -90,7 +94,7 @@ void main()
         t = b.get_tool(adress_src);
 
         // error 5 (first cause he checks for existence of the tool index) - only dst 
-        if (adress_dst[0] < 97 || adress_dst[0] > 104 || adress_dst[1] < 49 || adress_dst[1] > 56)
+        if (adress_dst[0] < a_ASCII || adress_dst[0] > h_ASCII || adress_dst[1] < one_ASCII || adress_dst[1] > eight_ASCII)
         {
             error = invalid_index;
         }
